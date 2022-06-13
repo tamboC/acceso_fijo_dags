@@ -1,0 +1,159 @@
+
+
+cable source-verify leasequery-filter downstream 3 5                                                           (M)
+
+cable ipv6 source-verify leasequery-filter downstream 3 5                                                      (M)
+
+
+cable l2-vpn-service xconnect nsi dot1q interface Port-channel1                                                (M)
+
+
+cable acfe enable                                                                                              (M)
+cable acfe period 30                                                                                           (M)
+cable util-interval 500                                                                                        (M)
+cable license enable-CPB                                                                                       (M)
+
+cable resiliency ds-bonding                                                                                    (M)
+cable qos permission create                                                                                    (M)
+cable qos permission update                                                                                    (M)
+cable qos permission modems                                                                                    (M)
+cable privacy hotlist cm 000f.21de.ad01                                                                        (M)
+cable service attribute ds-bonded downstream-type bonding-enabled enforce                                      (M)
+cable service attribute withhold-tlvs peak-rate                                                                (M)
+
+cable multicast auth enable default-action deny max-sessions 20                                                (M)
+cable wideband auto-reset                                                                                      (M)
+
+
+##### Perfiles de modulacion con mensajeria en 16QAM #############
+
+# Modulacion 64QAM Mensajeria 16QAM
+
+cable modulation-profile 225 atdma request 0 16 0 16 16qam scrambler 152 no-diff 64 fixed qpsk1 1 2048         (M)
+cable modulation-profile 225 atdma initial 5 34 0 48 16qam scrambler 152 no-diff 640 fixed qpsk1 1 204         (M)
+cable modulation-profile 225 atdma station 5 34 0 48 16qam scrambler 152 no-diff 384 fixed qpsk1 1 204         (M)
+cable modulation-profile 225 atdma a-short 6 76 6 16 64qam scrambler 152 no-diff 104 shortened qpsk1 0         (M)
+cable modulation-profile 225 atdma a-long 16 223 0 8 64qam scrambler 152 no-diff 104 shortened qpsk1 0         (M)
+cable modulation-profile 225 atdma a-ugs 16 223 0 8 64qam scrambler 152 no-diff 104 shortened qpsk1 1          (M)
+
+##### Perfiles de modulacion con mensajeria en QPSK #############
+
+# Modulacion 16QAM Mensajeria QPSK
+
+cable modulation-profile 222 atdma request 0 16 0 22 qpsk scrambler 152 no-diff 32 fixed qpsk0 1 2048          (M)
+cable modulation-profile 222 atdma initial 5 34 0 48 qpsk scrambler 152 no-diff 64 fixed qpsk0 1 2048          (M)
+cable modulation-profile 222 atdma station 5 34 0 48 qpsk scrambler 152 no-diff 64 fixed qpsk0 1 2048          (M)
+cable modulation-profile 222 atdma a-short 4 76 7 22 16qam scrambler 152 no-diff 64 shortened qpsk1 1          (M)
+cable modulation-profile 222 atdma a-long 10 220 0 22 16qam scrambler 152 no-diff 64 shortened qpsk1           (M)
+cable modulation-profile 222 atdma a-ugs 10 220 0 22 16qam scrambler 152 no-diff 64 shortened qpsk1 1          (M)
+
+
+cable logging badipsource 1048576                                                                              (M)
+cable logging layer2events                                                                                     (M)
+cable logging overlapip                                                                                        (M)
+cable logging downstream-index                                                                                 (M)
+cable primary-sflow-qos11 keep all                                                                             (M)
+cable throttle-modem init-rate 32 holdoff-time 45 flush-rate 300                                               (M)
+cable us-freq-use-cm-cap                                                                                       (M)
+cable admission-control preempt priority-voice                                                                 (M)
+
+##### Lineas Load Balance Estaticas #####
+
+cable load-balance docsis-enable                                                                               (M)
+cable load-balance docsis30-enable dynamic downstream                                                          (M)
+cable load-balance modem max-failures 2                                                                        (M)
+cable load-balance rule 1 disable-throughput-lowerbound ds 500                                                 (M)
+cable load-balance rule 2 disable-throughput-lowerbound us 100                                                 (M)
+cable load-balance docsis-policy 1 rule 1                                                                      (M)
+cable load-balance docsis-policy 1 rule 2                                                                      (M)
+cable load-balance d20-ggrp-default docsis-policy 1                                                            (M)
+cable load-balance d20-ggrp-default method utilization                                                         (M)
+cable load-balance d20-ggrp-default policy pure-ds-load                                                        (M)
+cable load-balance d20-ggrp-default threshold load 25                                                          (M)
+cable load-balance d30-ggrp-default policy pure-ds-load                                                        (M)
+
+##### Load Balance OUI exclude #####
+
+cable load-balance exclude oui 00.18.19 strict                                                                 (M)
+cable load-balance exclude oui 00.1C.C3 strict                                                                 (M)
+cable load-balance exclude oui 00.22.CE strict                                                                 (M)
+cable load-balance exclude oui 00.26.D9 strict                                                                 (M)
+cable load-balance exclude oui 00.39.55 strict                                                                 (M)
+cable load-balance exclude oui 08.80.39 strict                                                                 (M)
+cable load-balance exclude oui 10.56.11 strict                                                                 (M)
+cable load-balance exclude oui 10.5F.49 strict                                                                 (M)
+cable load-balance exclude oui 14.D4.FE strict                                                                 (M)
+cable load-balance exclude oui 18.B8.1F strict                                                                 (M)
+cable load-balance exclude oui 20.3D.66 strict                                                                 (M)
+cable load-balance exclude oui 20.E5.64 strict                                                                 (M)
+cable load-balance exclude oui 20.F1.9E strict                                                                 (M)
+cable load-balance exclude oui 34.BD.FA strict                                                                 (M)
+cable load-balance exclude oui 4C.12.65 strict                                                                 (M)
+cable load-balance exclude oui 54.E2.E0 strict                                                                 (M)
+cable load-balance exclude oui 58.19.F8 strict                                                                 (M)
+cable load-balance exclude oui 5C.B0.66 strict                                                                 (M)
+cable load-balance exclude oui 5C.E3.0E strict                                                                 (M)
+cable load-balance exclude oui 70.76.30 strict                                                                 (M)
+cable load-balance exclude oui 70.85.C6 strict                                                                 (M)
+cable load-balance exclude oui 78.23.AE strict                                                                 (M)
+cable load-balance exclude oui 7C.B2.1B strict                                                                 (M)
+cable load-balance exclude oui 84.96.D8 strict                                                                 (M)
+cable load-balance exclude oui 90.9D.7D strict                                                                 (M)
+cable load-balance exclude oui 90.9d.7d strict                                                                 (M)
+cable load-balance exclude oui 94.8F.CF strict                                                                 (M)
+cable load-balance exclude oui A0.55.DE strict                                                                 (M)
+cable load-balance exclude oui B0.77.AC strict                                                                 (M)
+cable load-balance exclude oui B0.93.5B strict                                                                 (M)
+cable load-balance exclude oui b0.93.5b strict                                                                 (M)
+cable load-balance exclude oui B0.DA.F9 strict                                                                 (M)
+cable load-balance exclude oui B4.F2.E8 strict                                                                 (M)
+cable load-balance exclude oui BC.2E.48 strict                                                                 (M)
+cable load-balance exclude oui BC.64.4B strict                                                                 (M)
+cable load-balance exclude oui C0.8C.9F strict                                                                 (M)
+cable load-balance exclude oui C8.FB.26 strict                                                                 (M)
+cable load-balance exclude oui CC.0D.EC strict                                                                 (M)
+cable load-balance exclude oui D0.E5.4D strict                                                                 (M)
+cable load-balance exclude oui D4.04.CD strict                                                                 (M)
+cable load-balance exclude oui D4.0A.A9 strict                                                                 (M)
+cable load-balance exclude oui E0.B7.B1 strict                                                                 (M)
+cable load-balance exclude oui F8.0B.BE strict                                                                 (M)
+cable load-balance exclude oui F8.2D.C0 strict                                                                 (M)
+cable load-balance exclude oui F8.A4.16 strict                                                                 (M)
+cable load-balance exclude oui BC.64.AB strict                                                                 (M)
+cable load-balance exclude oui D4.04.A9 strict                                                                 (M)
+cable load-balance exclude oui FC.AE.34 strict                                                                 (M)
+cable load-balance exclude oui 94.8F.CF strict                                                                 (M)
+cable load-balance exclude oui 00.08.0E strict                                                                 (M)
+cable load-balance exclude oui 00.08.CE strict                                                                 (M)
+cable load-balance exclude oui A8.11.FC strict                                                                 (M)
+cable load-balance exclude oui 5C.B0.66 strict                                                                 (M)
+cable load-balance exclude oui B0.93.5B strict                                                                 (M)
+cable load-balance exclude oui 78.23.AE strict                                                                 (M)
+cable load-balance exclude oui 58.19.F8 strict                                                                 (M)
+cable load-balance exclude oui D4.04.CD strict                                                                 (M)
+cable load-balance exclude oui 10.56.11 strict                                                                 (M)
+cable load-balance exclude oui 18.B8.1F strict                                                                 (M)
+cable load-balance exclude oui 50.75.F1 strict                                                                 (M)
+cable load-balance exclude oui 60.D2.48 strict                                                                 (M)
+
+cable modem max-cpe 48                                                                                         (M)
+
+no cable ds-max-burst                                                                                          (M)
+cable acfe enable                                                                                              (M)
+cable acfe period 30                                                                                           (M)
+cable acfe guar-bw-sync-period 240                                                                             (M)
+cable util-interval 500                                                                                        (M)
+cable license enable-CPB                                                                                       (M)
+cable rf-change-trigger percent 75                                                                             (M)
+cable rf-change-dampen-time 90                                                                                 (M)
+cable resiliency ds-bonding                                                                                    (M)
+no cable qos permission create	                                                                               (M)	
+no cable qos permission update                                                                                 (M)
+cable qos permission modems                                                                                    (M)
+
+cable service attribute ds-bonded downstream-type bonding-enabled enforce                                      (M)
+
+cable service attribute withhold-tlvs peak-rate                                                                (M)
+
+cable wideband auto-reset                                                                                      (M)
+

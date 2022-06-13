@@ -1,0 +1,218 @@
+! CONFIGURE INTERFACE CABLE
+{% for port in range (0, 8) %}
+interface cable {{ item }}/0/{{ port }}
+ cable d31-mode
+ load-interval 30
+ downstream Integrated-Cable {{ item }}/0/{{ port }} rf-channel 0-30
+ downstream Integrated-Cable {{ item }}/0/{{ port }} rf-channel 158
+ upstream 0 Upstream-Cable {{ item }}/0/{{ port * 2 }} us-channel 0
+ upstream 1 Upstream-Cable {{ item }}/0/{{ port * 2 }} us-channel 1
+ upstream 2 Upstream-Cable {{ item }}/0/{{ port * 2 }} us-channel 2
+ upstream 3 Upstream-Cable {{ item }}/0/{{ port * 2 }} us-channel 3
+ upstream 4 Upstream-Cable {{ item }}/0/{{ port * 2 }} us-channel 4
+ upstream 5 Upstream-Cable {{ item }}/0/{{ port * 2 }} us-channel 5
+ upstream 6 Upstream-Cable {{ item }}/0/{{ port * 2 }} us-channel 12
+ upstream 7 Upstream-Cable {{ item }}/0/{{ port * 2 }} us-channel 13
+ upstream 8 Upstream-Cable {{ item }}/0/{{  port * 2+1 }} us-channel 0
+ upstream 9 Upstream-Cable {{ item }}/0/{{  port * 2+1 }} us-channel 1
+ upstream 10 Upstream-Cable {{ item }}/0/{{  port * 2+1 }} us-channel 2
+ upstream 11 Upstream-Cable {{ item }}/0/{{  port * 2+1 }} us-channel 3
+ upstream 12 Upstream-Cable {{ item }}/0/{{  port * 2+1 }} us-channel 4
+ upstream 13 Upstream-Cable {{ item }}/0/{{  port * 2+1 }} us-channel 5
+ upstream 14 Upstream-Cable {{ item }}/0/{{  port * 2+1 }} us-channel 12
+ upstream 15 Upstream-Cable {{ item }}/0/{{  port * 2+1 }} us-channel 13
+ cable upstream balance-scheduling
+ cable upstream max-channel-power-offset 6
+ cable upstream bonding-group 20{{ item }}{% if port < 5  %}0{% endif %}{{ port*2}}
+  upstream 0
+  upstream 1
+  attributes 80000000
+ cable upstream bonding-group 20{{ item }}{% if port < 5  %}0{% endif %}{{ port*2+1}}
+  upstream 8
+  upstream 9
+  attributes 80000000
+ cable upstream bonding-group 21{{ item }}{% if port < 5  %}0{% endif %}{{ port*2}}
+  upstream 1
+  upstream 2
+  attributes 80000000
+ cable upstream bonding-group 21{{ item }}{% if port < 5  %}0{% endif %}{{ port*2+1}}
+  upstream 9
+  upstream 10
+  attributes 80000000
+ cable upstream bonding-group 30{{ item }}{% if port < 5  %}0{% endif %}{{ port*2}}
+  upstream 0
+  upstream 1
+  upstream 2
+  attributes 80000000
+ cable upstream bonding-group 30{{ item }}{% if port < 5  %}0{% endif %}{{ port*2+1}}
+  upstream 8
+  upstream 9
+  upstream 10
+  attributes 80000000
+ cable upstream bonding-group 31{{ item }}{% if port < 5  %}0{% endif %}{{ port*2}}
+  upstream 0
+  upstream 1
+  upstream 6
+  attributes 80000000
+ cable upstream bonding-group 31{{ item }}{% if port < 5  %}0{% endif %}{{ port*2+1}}
+  upstream 8
+  upstream 9
+  upstream 14
+  attributes 80000000
+ cable upstream bonding-group 32{{ item }}{% if port < 5  %}0{% endif %}{{ port*2}}
+  upstream 0
+  upstream 1
+  upstream 7
+  attributes 80000000
+ cable upstream bonding-group 32{{ item }}{% if port < 5  %}0{% endif %}{{ port*2+1}}
+  upstream 8
+  upstream 9
+  upstream 15
+  attributes 80000000
+ cable upstream bonding-group 33{{ item }}{% if port < 5  %}0{% endif %}{{ port*2}}
+  upstream 0
+  upstream 4
+  upstream 5
+  attributes 80000000
+ cable upstream bonding-group 33{{ item }}{% if port < 5  %}0{% endif %}{{ port*2+1}}
+  upstream 8
+  upstream 12
+  upstream 13
+  attributes 80000000
+ cable upstream bonding-group 34{{ item }}{% if port < 5  %}0{% endif %}{{ port*2}}
+  upstream 0
+  upstream 1
+  upstream 3
+  attributes 80000000
+ cable upstream bonding-group 34{{ item }}{% if port < 5  %}0{% endif %}{{ port*2+1}}
+  upstream 8
+  upstream 9
+  upstream 11
+  attributes 80000000
+ cable upstream bonding-group 40{{ item }}{% if port < 5  %}0{% endif %}{{ port*2}}
+  upstream 0
+  upstream 1
+  upstream 2
+  upstream 3
+  attributes 80000000
+ cable upstream bonding-group 40{{ item }}{% if port < 5  %}0{% endif %}{{ port*2+1}}
+  upstream 8
+  upstream 9
+  upstream 10
+  upstream 11
+  attributes 80000000
+ cable upstream bonding-group 41{{ item }}{% if port < 5  %}0{% endif %}{{ port*2}}
+  upstream 0
+  upstream 1
+  upstream 2
+  upstream 5
+  attributes 80000000
+ cable upstream bonding-group 41{{ item }}{% if port < 5  %}0{% endif %}{{ port*2+1}}
+  upstream 8
+  upstream 9
+  upstream 10
+  upstream 13
+  attributes 80000000
+ cable upstream bonding-group 42{{ item }}{% if port < 5  %}0{% endif %}{{ port*2}}
+  upstream 0
+  upstream 1
+  upstream 4
+  upstream 5
+  attributes 80000000
+ cable upstream bonding-group 42{{ item }}{% if port < 5  %}0{% endif %}{{ port*2+1}}
+  upstream 8
+  upstream 9
+  upstream 12
+  upstream 13
+  attributes 80000000
+ cable upstream bonding-group 43{{ item }}{% if port < 5  %}0{% endif %}{{ port*2}}
+  upstream 0
+  upstream 1
+  upstream 2
+  upstream 7
+  attributes 80000000
+ cable upstream bonding-group 43{{ item }}{% if port < 5  %}0{% endif %}{{ port*2+1}}
+  upstream 8
+  upstream 9
+  upstream 10
+  upstream 15
+  attributes 80000000
+ cable upstream bonding-group 44{{ item }}{% if port < 5  %}0{% endif %}{{ port*2}}
+  upstream 0
+  upstream 1
+  upstream 2
+  upstream 7
+  attributes 80000000
+ cable upstream bonding-group 44{{ item }}{% if port < 5  %}0{% endif %}{{ port*2+1}}
+  upstream 8
+  upstream 9
+  upstream 10
+  upstream 15
+  attributes 80000000
+ cable upstream bonding-group 45{{ item }}{% if port < 5  %}0{% endif %}{{ port*2}}
+  upstream 0
+  upstream 4
+  upstream 5
+  upstream 7
+  attributes 80000000
+ cable upstream bonding-group 45{{ item }}{% if port < 5  %}0{% endif %}{{ port*2+1}}
+  upstream 8
+  upstream 12
+  upstream 13
+  upstream 15
+  attributes 80000000  
+ cable upstream bonding-group 50{{ item }}{% if port < 5  %}0{% endif %}{{ port*2}}
+  upstream 0
+  upstream 1
+  upstream 4
+  upstream 5
+  upstream 7
+  attributes 80000000
+ cable upstream bonding-group 50{{ item }}{% if port < 5  %}0{% endif %}{{ port*2+1}}
+  upstream 8
+  upstream 9
+  upstream 12
+  upstream 13
+  upstream 15
+  attributes 80000000
+ cable upstream bonding-group 51{{ item }}{% if port < 5  %}0{% endif %}{{ port*2}}
+  upstream 0
+  upstream 1
+  upstream 2
+  upstream 5
+  upstream 7
+  attributes 80000000
+ cable upstream bonding-group 51{{ item }}{% if port < 5  %}0{% endif %}{{ port*2+1}}
+  upstream 8
+  upstream 9
+  upstream 10
+  upstream 13
+  upstream 15
+  attributes 80000000
+{% if dsg == True %} 
+ cable downstream dsg timer 1
+ cable downstream dsg tg 100 channel {{ dsg_channels[item][port] }}
+ cable downstream dsg tg 200 channel {{ dsg_channels[item][port] }}
+ cable downstream dsg tg 300 channel {{ dsg_channels[item][port] }}
+{% endif %}
+ cable bundle 1
+ cable shared-secret 7 073735144058321F365D120922027B
+ cable enable-trap cmonoff-notification
+ cable map-advance dynamic 1000 600
+ cable sid-cluster-group num-of-cluster 2
+ cable sid-cluster-switching max-request 1
+ cable privacy skip-validity-period
+ cable privacy mandatory
+ cable privacy retain-failed-certificates
+ cable privacy bpi-plus-policy total-enforcement
+ hold-queue 2048 in
+ cable upstream ranging-init-technique 2
+ cable upstream ranging-poll t4-multiplier 2
+ cable upstream resiliency sf-move RTPS 
+ cable upstream resiliency sf-move NRTPS 
+ cable upstream resiliency sf-move UGS
+ cable upstream resiliency data-burst snr 24 ufec 1 cfec 0 hysteresis 4
+ shutdown
+ exit
+{% endfor %}
+!

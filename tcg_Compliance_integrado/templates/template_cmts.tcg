@@ -1,0 +1,11 @@
+
+hostname [[hostname]]                                                           (M,G_hostname)
+111                                                                             (M,G_hostname)
+grupo_regex [[hostname]]                                                                           (O,G_hostname)
+
+lineao1 (O)
+lineaM (M)
+lineas [[dd]]  (M)
+
+redundancy linecard-group 0 internal-switch member slot [[slot]] primary            (M,G_redundancia,S)
+interface Cable[[slot]]/[[subslot]]/[[port]] cable upstream bonding-group [[group]]               (M,G_redundancia)

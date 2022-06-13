@@ -1,0 +1,55 @@
+[CMTS_ALL:children] 
+CMTS_ARRIS 
+CMTS_CISCO 
+CMTS_CASA
+
+[CMTS_ARRIS]
+10.100.150.98 nombre=CMT6.DEV1-E6K
+#CMT1.BEL2-E6K
+#CMT5.BEL2-E6K
+#CMT4.BEL2-E6K
+#CMT3.BEL2-E6K
+#CMT2.BEL2-E6K
+#CMT7.PLA1-E6K
+
+[CMTS_CISCO]
+#10.100.150.8 nombre=CMT5.ALM1-CBR8
+#CMT4.AVA1-CBR8
+#CMT5.AVA1-CBR8
+#CMT2.AVA1-CBR8
+#CMT1.AVA1-CBR8
+#CMT3.AVA1-CBR8
+#10.100.150.46 nombre=CMT4.ITU1-CBR8
+10.100.153.17 nombre=CMT1.LOR1-CBR8
+
+[CMTS_CASA]
+10.100.153.30 nombre=CMT1.JMA1-C100G
+#CMT1.JMA1-C100G
+
+[CMTS_ALL:vars]
+ansible_network_os=ios
+
+[CMTS]
+#10.100.150.98
+#10.100.150.8
+10.100.153.30
+
+[NE]
+#172.16.6.254 nombre=099M01 modelo=5600_T
+172.21.101.70 nombre=HBDM01 modelo=5608_T
+#172.21.101.74 nombre=BUAP01 modelo=5800
+ 
+[NE:vars]
+ansible_network_os = ce
+anisble_user = root
+anisble_password = anacrusa79
+
+[OLT_NK]
+172.21.101.90 nombre=ALGP01 modelo=7360
+172.24.1.150 nombre=HYRM01 modelo=7302
+
+[OLT_NK:vars]
+
+[OLT:children]
+OLT_HW
+OLT_NK

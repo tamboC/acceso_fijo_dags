@@ -1,0 +1,82 @@
+cable us-freq-use-cm-cap
+cable modulation-profile 222 atdma request 0 16 0 22 16qam scrambler 152 no-diff 32 fixed qpsk1 1 2048
+cable modulation-profile 222 atdma initial 5 34 0 48 16qam scrambler 152 no-diff 384 fixed qpsk1 1 2048
+cable modulation-profile 222 atdma station 5 34 0 48 16qam scrambler 152 no-diff 384 fixed qpsk1 1 2048
+cable modulation-profile 222 atdma a-short 4 76 7 22 16qam scrambler 152 no-diff 64 shortened qpsk1 1 2048
+cable modulation-profile 222 atdma a-long 7 232 0 22 16qam scrambler 152 no-diff 64 shortened qpsk1 1 2048
+cable modulation-profile 222 atdma a-ugs 7 232 0 22 16qam scrambler 152 no-diff 64 shortened qpsk1 1 2048
+cable modulation-profile 225 atdma request 0 16 0 16 16qam scrambler 152 no-diff 64 fixed qpsk1 1 2048
+cable modulation-profile 225 atdma initial 5 34 0 48 16qam scrambler 152 no-diff 640 fixed qpsk1 1 2048
+cable modulation-profile 225 atdma station 5 34 0 48 16qam scrambler 152 no-diff 384 fixed qpsk1 1 2048
+cable modulation-profile 225 atdma a-short 6 76 6 16 64qam scrambler 152 no-diff 104 shortened qpsk1 0 2048
+cable modulation-profile 225 atdma a-long 16 223 0 8 64qam scrambler 152 no-diff 104 shortened qpsk1 0 2048
+cable modulation-profile 225 atdma a-ugs 16 223 0 8 64qam scrambler 152 no-diff 104 shortened qpsk1 1 2048
+
+! # Modulacion 64QAM Mensajeria 16QAM
+cable modulation-profile 225 atdma request 0 16 0 16 16qam scrambler 152 no-diff 64 fixed qpsk1 1 2048
+cable modulation-profile 225 atdma initial 5 34 0 48 16qam scrambler 152 no-diff 640 fixed qpsk1 1 2048
+cable modulation-profile 225 atdma station 5 34 0 48 16qam scrambler 152 no-diff 384 fixed qpsk1 1 2048
+cable modulation-profile 225 atdma a-short 6 76 6 16 64qam scrambler 152 no-diff 104 shortened qpsk1 0 2048
+cable modulation-profile 225 atdma a-long 16 223 0 8 64qam scrambler 152 no-diff 104 shortened qpsk1 0 2048
+cable modulation-profile 225 atdma a-ugs 16 223 0 8 64qam scrambler 152 no-diff 104 shortened qpsk1 1 2048
+
+! # Modulacion 16QAM Mensajeria QPSK
+cable modulation-profile 222 atdma request 0 16 0 22 qpsk scrambler 152 no-diff 32 fixed qpsk0 1 2048
+cable modulation-profile 222 atdma initial 5 34 0 48 qpsk scrambler 152 no-diff 64 fixed qpsk0 1 2048
+cable modulation-profile 222 atdma station 5 34 0 48 qpsk scrambler 152 no-diff 64 fixed qpsk0 1 2048
+cable modulation-profile 222 atdma a-short 4 76 7 22 16qam scrambler 152 no-diff 64 shortened qpsk1 1 2048
+cable modulation-profile 222 atdma a-long 10 220 0 22 16qam scrambler 152 no-diff 64 shortened qpsk1 1 2048
+cable modulation-profile 222 atdma a-ugs 10 220 0 22 16qam scrambler 152 no-diff 64 shortened qpsk1 1 2048
+
+! ###### Global OFDMA ######
+cable upstream ofdma-prof-mgmt downgrade enable 
+cable upstream ofdma-prof-mgmt rxmer-poll-interval 10 
+cable upstream ofdma-prof-mgmt downgrade interval 10 
+cable upstream ofdma-prof-mgmt downgrade threshold 100 
+cable upstream ofdma-prof-mgmt downgrade hold-down 60 
+cable upstream ofdma-prof-mgmt downgrade min-cws 1000 
+cable upstream ofdma-prof-mgmt downgrade partial-threshold 150 
+cable upstream ofdma-prof-mgmt downgrade partial-hold-down 60
+!
+!# Modulacion para bloque Lowsplit 11.6 MHz
+cable mod-profile-ofdma 420
+  subcarrier-spacing 25KHz
+  initial-rng-subcarrier 64
+  fine-rng-subcarrier 128
+  data-iuc 10 modulation 128-QAM pilot-pattern 11
+  data-iuc 11 modulation 64-QAM pilot-pattern 11
+  data-iuc 12 modulation 16-QAM pilot-pattern 11
+  data-iuc 13 modulation 8-QAM pilot-pattern 11
+!
+!# Modulacion para bloque Lowsplit 14 MHz
+cable mod-profile-ofdma 430
+  subcarrier-spacing 25KHz
+  initial-rng-subcarrier 64
+  fine-rng-subcarrier 128
+  data-iuc 10 modulation 256-QAM pilot-pattern 11
+  data-iuc 11 modulation 128-QAM pilot-pattern 11
+  data-iuc 12 modulation 64-QAM pilot-pattern 11
+  data-iuc 13 modulation 16-QAM pilot-pattern 11
+!# Modulacion para bloque Midsplit
+cable mod-profile-ofdma 480
+  subcarrier-spacing 25KHz
+  initial-rng-subcarrier 64
+  fine-rng-subcarrier 128
+  data-iuc 9 modulation 1024-QAM pilot-pattern 11
+  data-iuc 10 modulation 512-QAM pilot-pattern 11
+  data-iuc 11 modulation 256-QAM pilot-pattern 11
+  data-iuc 12 modulation 64-QAM pilot-pattern 11
+  data-iuc 13 modulation 16-QAM pilot-pattern 11
+
+cable downstream ofdm-chan-profile 64
+  cyclic-prefix 1024
+  interleaver-depth 16
+  pilot-scaling 48
+  roll-off 256
+  subcarrier-spacing 50KHZ
+  profile-control modulation-default 256-QAM
+  profile-ncp modulation-default 16-QAM
+  profile-data 1 modulation-default 1024-QAM
+  profile-data 2 modulation-default 2048-QAM
+  profile-data 3 modulation-default 4096-QAM
+!

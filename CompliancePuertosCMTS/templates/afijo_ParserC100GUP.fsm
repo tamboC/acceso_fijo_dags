@@ -1,0 +1,17 @@
+Value Filldown upstream (\d+\/\d+.\d+)
+Value Filldown frequency (\d+)
+Value Filldown bw (\d+)
+Value Filldown power (\d+)
+Value mp (\d+)
+Value Required channelshut (\w*)
+
+
+
+Start
+  ^interface\supstream\s+${upstream}
+  ^\s+frequency\s+${frequency}
+  ^\s+channel\-width\s+${bw}
+  ^\s+power\-level\s+${power}
+  ^\s+logical\-channel\s+(\d+)\s+profile\s+${mp}\s+
+  ^\s+${channelshut}\slogical\-channel\s+(\d+)\s+shutdown -> Record
+  ^\s+no\sshutdown -> Record

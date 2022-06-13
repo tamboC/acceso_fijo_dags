@@ -1,0 +1,29 @@
+---
+- name: Playbook Deploy OLT NK
+  hosts: NE
+  gather_facts: false
+  connection: telnet
+  # debugger: never
+    
+  tasks:
+ 
+      - name: -- tiro comandos --
+        dslam_alcatel_command:
+          prompt: "{{ inventory_hostname }}.+(#|$)" 
+          cmdtimeout: 300
+          command: "{{mykey}}"
+        register: show_data
+        ignore_errors: yes
+
+      - name: -- data_qos --
+        set_fact:
+          data_qos: "{{ show_data['command'][0]['info configure qos profiles ingress-qos'] | parse_cli_textfsm('qos.fsm')}}"
+          cacheable: yes
+        delegate_to: localhost 
+
+      - name: -- data_qos --
+        set_fact:
+          data_vlan: "{{ show_data['command'][1]['info configure vlan id 30'] | parse_cli_textfsm('vlan.fsm')}}"
+          cacheable: yes
+        delegate_to: localhost 
+    

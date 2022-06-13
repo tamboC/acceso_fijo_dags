@@ -1,0 +1,5 @@
+Value port (\d+\/\d+\/\d+\/\d+)
+Value status (\w+)
+
+Start
+  ^.*pon\:${port}\s+${status} -> Record

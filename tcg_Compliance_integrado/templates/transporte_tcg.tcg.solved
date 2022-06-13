@@ -1,0 +1,31 @@
+interface [[interface_uplink]]                                                                          (M,G_interfaceuplink)?
+interface [[interface_uplink]] description [[descripcion]]<--(.*?)                                      (M,G_interfaceuplink)?
+interface [[interface_uplink]] mtu [[mtu]]                                                              (M,G_interfaceuplink)?
+interface [[interface_uplink]] service-policy input qos_fabric_uplink_BFDRT                             (M,G_interfaceuplink)??
+interface [[interface_uplink]] service-policy output TECO-QoS-Scheduller                                (M,G_interfaceuplink)?                          
+interface [[interface_uplink]] ipv4 address [[ip_uplink]] [[mascara]]                                   (M,G_interfaceuplink)?
+interface [[interface_uplink]] load-interval 30                                                         (M,G_interfaceuplink)??
+interface [[interface_uplink]] flow ipv4 monitor FMMAP sampler FNF_SAMPLER_MAP ingress                  (M,G_interfaceuplink)?
+interface [[interface_uplink]] flow mpls monitor MPLS_UPLINK sampler FNF_SAMPLER_MAP ingress            (M,G_interfaceuplink)?
+router ospf 100 area [[area]] interface [[interface_uplink]]                                            (M,G_interfaceuplink)?
+router ospf 100 area [[area]] interface [[interface_uplink]] bfd fast-detect                            (M,G_interfaceuplink)?
+mpls ldp interface [[interface_uplink]]                                                                 (M,G_interfaceuplink)?
+router pim address-family ipv4 interface [[interface_uplink]]                                           (M,G_interfaceuplink)?
+router pim address-family ipv4 interface [[interface_uplink]] enable                                    (M,G_interfaceuplink)?
+                             
+# este ejemplo, con que exista una interface de uplink con genericlist ya lo da por validado
+#las compartidas seguro las valia tambien cualquier grupo validado
+# como hago que me valide que todas las de uplink estan? 
+# aplico inventariado con enlaces de uplink? ok
+# puedo hacer lo mismo con una funcion? supongo que si, la funcion deberia generarme el json
+# ????
+interface [[interface_PSW]]                                                                 (M,G_PSWHSI)
+interface [[interface_PSW]] description [[descripcion]]                                     (M,G_PSWHSI)
+interface [[interface_PSW]] mtu 4484                                                        (M,G_PSWHSI)
+interface [[interface_PSW]] attach generic-interface-list [[DSLAM]]                         (M,G_PSWHSI)
+router ospf 100 area [[area]] interface [[interface_uplink]]                                (M,G_PSWHSI,S)
+generic-interface-list [[DSLAM]] interface [[interface_uplink]]                             (M,G_PSWHSI,S)
+tacacs source-interface Loopback0 vrf default                          (M,W)
+tacacs-server host 200.43.9.251 port 49    (M,TRAP_CRITICAL)
+tacacs-server host 200.43.9.15 port 49    (M,TRAP_CRITICAL)
+tacacs-server key 7 [[key]]                                            (M)

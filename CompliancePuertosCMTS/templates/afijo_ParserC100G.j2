@@ -1,0 +1,12 @@
+Value Required mac_domain (\d+)
+Value Required dw_slot (\d+)
+Value dw_conn (\d+)
+Value up_slot (\d+)
+Value up_conn (\d+)
+Value List up_chann (\d+)
+
+Start
+  ^\w+\n\n -> Record
+  ^interface docsis-mac\s+${mac_domain}
+  ^\s+downstream \d+ interface (qam|ofdm) ${dw_slot}\/${dw_conn}\/\d+ -> Record
+  ^\s+upstream \d+ interface upstream ${up_slot}\/${up_conn}\.${up_chann}\/0

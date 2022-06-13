@@ -1,0 +1,17 @@
+
+
+
+<<Elementos.name>> tiene valor <<Elementos.valor>> y este tag <<Elementos.tags>> su hijo es <<Elementos.hijos.nombre_hijo>> el cual tiene el valor <<Elementos.hijos.valor_hijo>>  (M)
+
+<<Elementos.name>> tiene valor <<Elementos.valor>> y este tag <<Elementos.tags>>    (M)
+
+
+controller Upstream-Cable [[location]] us-channel [[channel]] frequency 75400000                (M)
+controller Upstream-Cable [[location]] us-channel [[channel]] channel-width 6400000 6400000     (M)
+controller Upstream-Cable [[location]] us-channel [[channel]] power-level 10                    (M,TRAP_CRITICAL)
+controller Upstream-Cable [[location]] us-channel [[channel]] docsis-mode atdma                 (M)
+controller Upstream-Cable [[location]] us-channel [[channel]] power-level 9                    (M,TRAP_CRITICAL)
+
+
+
+interface cable-mac 1.0 ip address <<CMT1ALM1E6K.ip>> 255.255.255.0 secondary                   (M)

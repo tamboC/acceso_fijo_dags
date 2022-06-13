@@ -1,0 +1,2 @@
+interface cable-mac 1.0 ip address <<CMT1ALM1E6K.ip>> 255.255.255.0 secondary               (M)
+interface cable-mac 1.0 ip address <<CMT1ALM1E6K.mta>> 255.255.255.0 secondary              (M)

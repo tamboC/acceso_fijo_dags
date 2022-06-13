@@ -1,0 +1,55 @@
+---
+- hosts: NE
+  gather_facts: false
+  connection: network_cli
+  debugger: never
+  vars:
+    folder_tasks: '/usr/local/airflow/dags/cel_afijo/afijo_prueba_alta_cmts/ansible/tasks'    
+    folder_templates : '/usr/local/airflow/dags/cel_afijo/afijo_prueba_alta_cmts/ansible/templates'
+    folder_config: '/io/cel_afijo/tmp/alta_cmts/CBR8/{{inventory_hostname}}'
+    linecards:
+      - 1
+      - 2
+      - 3
+      - 6
+      - 7
+      - 8
+      - 9
+
+  tasks:
+  - name: "NAME {{ inventory_hostname }}"
+    debug:
+      msg: "NAME {{ inventory_hostname }}"
+
+  - name: DELETE EXISTING CONFIGURATION
+    file:
+      state: absent
+      path: /io/cel_afijo/tmp/alta_cmts/CBR8/{{inventory_hostname}}/configuration_day2.cfg
+    delegate_to: localhost   
+
+  - name: INCLUDE VARIABLES
+    include_vars:
+      file: "/io/cel_afijo/tmp/alta_cmts/CBR8/{{ inventory_hostname }}/combinations.yml"
+      name:  port_parameters
+
+#  - name: -- DEBUG --
+#    debug: 
+#      msg: "{{ port_parameters }}"
+
+   
+  - name: -- GENERATE and APPLY CONFIGURATION CONTROLLER UPSTREAM_CABLE --
+    include_tasks: "{{ folder_tasks }}/config_CBR8_controller_upstream_cable_ch_map.yml"
+    with_items: "{{ linecards }}"
+
+
+  - name: -- SAVE CONFIGURE --
+    ios_config: 
+      backup: no
+      save_when: always
+    retries: 1
+    delay: 5
+    ignore_errors: yes
+    vars:
+      ansible_command_timeout: 1200    
+    when: port_parameters.apply_config == true
+

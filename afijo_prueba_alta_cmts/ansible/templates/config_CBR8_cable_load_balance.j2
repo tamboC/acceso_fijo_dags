@@ -1,0 +1,92 @@
+! LOAD BALANCE
+cable load-balance docsis-enable
+cable load-balance docsis30-enable dynamic downstream
+cable load-balance method-utilization min-threshold 50
+cable load-balance rule 1 disable-throughput-lowerbound ds 500
+cable load-balance rule 2 disable-throughput-lowerbound us 100
+cable load-balance docsis-policy 1 rule 1
+cable load-balance docsis-policy 1 rule 2
+cable load-balance d20-ggrp-default init-tech-list 4
+cable load-balance d20-ggrp-default docsis-policy 1
+cable load-balance d20-ggrp-default method utilization
+cable load-balance d20-ggrp-default policy pure-ds-load
+cable load-balance d20-ggrp-default threshold load 25
+cable load-balance d30-ggrp-default init-tech-list 4
+cable load-balance d30-ggrp-default policy pure-ds-load
+cable load-balance modem max-failures 2
+!
+cable load-balance exclude oui 00.18.19 strict
+cable load-balance exclude oui 00.1C.C3 strict
+cable load-balance exclude oui 00.22.CE strict
+cable load-balance exclude oui 00.26.D9 strict
+cable load-balance exclude oui 00.39.55 strict
+cable load-balance exclude oui 08.80.39 strict
+cable load-balance exclude oui 10.56.11 strict
+cable load-balance exclude oui 10.5F.49 strict
+cable load-balance exclude oui 14.D4.FE strict
+cable load-balance exclude oui 18.B8.1F strict
+cable load-balance exclude oui 20.3D.66 strict
+cable load-balance exclude oui 20.E5.64 strict
+cable load-balance exclude oui 20.F1.9E strict
+cable load-balance exclude oui 34.BD.FA strict
+cable load-balance exclude oui 4C.12.65 strict
+cable load-balance exclude oui 54.E2.E0 strict
+cable load-balance exclude oui 58.19.F8 strict
+cable load-balance exclude oui 5C.B0.66 strict
+cable load-balance exclude oui 5C.E3.0E strict
+cable load-balance exclude oui 70.76.30 strict
+cable load-balance exclude oui 70.85.C6 strict
+cable load-balance exclude oui 78.23.AE strict
+cable load-balance exclude oui 7C.B2.1B strict
+cable load-balance exclude oui 84.96.D8 strict
+cable load-balance exclude oui 90.9D.7D strict
+cable load-balance exclude oui 90.9d.7d strict
+cable load-balance exclude oui 94.8F.CF strict
+cable load-balance exclude oui A0.55.DE strict
+cable load-balance exclude oui B0.77.AC strict
+cable load-balance exclude oui B0.93.5B strict
+cable load-balance exclude oui b0.93.5b strict
+cable load-balance exclude oui B0.DA.F9 strict
+cable load-balance exclude oui B4.F2.E8 strict
+cable load-balance exclude oui BC.2E.48 strict
+cable load-balance exclude oui BC.64.4B strict
+cable load-balance exclude oui C0.8C.9F strict
+cable load-balance exclude oui C8.FB.26 strict
+cable load-balance exclude oui CC.0D.EC strict
+cable load-balance exclude oui D0.E5.4D strict
+cable load-balance exclude oui D4.04.CD strict
+cable load-balance exclude oui D4.0A.A9 strict
+cable load-balance exclude oui E0.B7.B1 strict
+cable load-balance exclude oui F8.0B.BE strict
+cable load-balance exclude oui F8.2D.C0 strict
+cable load-balance exclude oui F8.A4.16 strict
+cable load-balance exclude oui BC.64.AB strict
+cable load-balance exclude oui D4.04.A9 strict
+cable load-balance exclude oui FC.AE.34 strict
+cable load-balance exclude oui 94.8F.CF strict
+cable load-balance exclude oui 00.08.0E strict
+cable load-balance exclude oui 00.08.CE strict
+cable load-balance exclude oui A8.11.FC strict
+cable load-balance exclude oui 5C.B0.66 strict
+cable load-balance exclude oui B0.93.5B strict
+cable load-balance exclude oui 78.23.AE strict
+cable load-balance exclude oui 58.19.F8 strict
+cable load-balance exclude oui D4.04.CD strict
+cable load-balance exclude oui 10.56.11 strict
+cable load-balance exclude oui 18.B8.1F strict
+cable load-balance exclude oui 50.75.F1 strict
+cable load-balance exclude oui 60.D2.48 strict
+!
+! LOAD BALANCE GROUP
+{% for line in linecards %}
+{% for port in range (8) %}
+cable load-balance docsis-group {{ line }}0{{ port }}01
+ downstream integrated-cable {{ line }}/0/{{ port }}  rf-channel 0-31 158
+ upstream upstream-cable {{ line }}/0/{{ port*2 }} us-channel 0-5 12-13
+!
+cable load-balance docsis-group {{ line }}0{{ port }}02
+ downstream integrated-cable {{ line }}/0/{{ port }}  rf-channel 0-31 158
+ upstream upstream-cable {{ line }}/0/{{ port*2+1 }} us-channel 0-5 12-13
+!
+{% endfor %}
+{% endfor %}

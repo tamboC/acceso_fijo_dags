@@ -1,0 +1,50 @@
+---
+- hosts: OLT_HW
+  gather_facts: false
+  connection: telnet
+  debugger: never
+
+  tasks:
+##########################################
+############# Bloque para OLTS #############
+##########################################  
+    - block:
+        - name: -- Display Version --
+          dslam_huawei_command:
+            prompt: "{{ nombre }}.*(>|#)"
+            enable: true
+            command:
+              - undo smart 
+              - display version 
+          register: info_model
+
+        - name: -- Filtro Modelo --
+          set_fact:
+            model: "{{ info_model.command[1]['display version'] | parse_cli_textfsm('./templates/fsm/modelo_hw.fsm')}}"
+          delegate_to: localhost
+
+        - name: Mostrar Resultado 
+          debug:
+            msg: "{{model}}"
+        - name:
+          set_fact: 
+            hw_vars: "{{model[0].modelo}},{{model[0].patch}},{{model[0].sw}}"
+          when: model is defined 
+
+        - name: 
+          lineinfile:
+            path: /io/cel_afijo/tmp/olt_models.csv
+            line: "{{nombre}},HUAWEI,{{hw_vars}}"
+            create: yes
+            state: present
+          delegate_to: localhost
+
+        # - name: 
+        #   lineinfile:
+        #     path: ./olt_models.csv
+        #     line: "{{inventory_hostname}},{{model[0].modelo}}"
+        #     create: yes
+        #     state: present
+        #   delegate_to: localhost
+
+

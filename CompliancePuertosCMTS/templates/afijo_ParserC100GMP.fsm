@@ -1,0 +1,8 @@
+Value mp (\d+)
+Value shortmod (\w+)
+Value longmod (\w+)
+
+Start
+  ^modulation\-profile\s${mp}
+  ^\s+a\-short\satdma\s${shortmod}
+  ^\s+a\-long\satdma\s${longmod} -> Record

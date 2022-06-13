@@ -1,0 +1,39 @@
+---
+- name: Playbook Backup OLTs
+  hosts: olt_NK
+  connection: telnet
+  debugger: never
+  gather_facts: no
+
+  tasks:
+    - name: Creo el directorio para guardar el backup
+      file:
+        path: /io/cel_core/backup/OLT/{{nombre}}/configs/
+        state: directory
+      delegate_to: localhost
+
+    - name: -- Commands--
+      dslam_alcatel_command:
+        prompt: "{{ nombre }}.+#" 
+        cmdtimeout: 5600
+        command:
+          - info configure
+      register: command_output_NK
+      until: command_output_NK is succeeded
+      retries: 2
+      delay: 30
+      ignore_errors: yes  
+
+    - name: Debug
+      debug:
+        msg: "{{command_output_NK}}"
+      when: command_output_NK is defined
+      delegate_to: localhost
+
+    - name: Copio salida de NK
+      copy:
+        content: "{{ command_output_NK.command[0]['info configure'] }}"
+        dest: /io/cel_core/backup/OLT/{{nombre}}/configs/NK_{{nombre}}_{{now().strftime("%d-%m-%y_%H-%M")}}.bkp
+      when: command_output_NK is defined
+      delegate_to: localhost
+      

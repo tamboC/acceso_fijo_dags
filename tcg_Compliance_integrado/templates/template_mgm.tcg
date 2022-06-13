@@ -1,0 +1,192 @@
+################################
+############MANAGEMENT##########
+################################
+
+
+# VTYs
+line con 0
+line con 0 exec-timeout 60 0                                             (M)
+line con 0 privilege level 15                                            (M)
+line con 0 logging synchronous                                           (M)
+line con 0 stopbits 1                                                    (M)
+line con 0 login authentication aaa-tacacs-login                         (M)
+line aux 0                                                               
+line aux 0 password 7 104D000A0618                                       (M)
+line aux 0 stopbits 1                                                    (M)
+line vty 0 4                                                              
+line vty 0 4 access-class ACL10 in                                       (M)
+line vty 0 4 exec-timeout 15 0                                           (M)
+line vty 0 4 privilege level 15                                          (M)
+line vty 0 4 logging synchronous                                         (M)
+line vty 0 4 login authentication aaa-tacacs-login                       (M)
+line vty 0 4 transport input ssh                                         (M)
+line vty 0 4 transport output none                                       (M)
+line vty 5 15                                                             
+line vty 5 15 access-class ACL10 in                                       (M)
+line vty 5 15 exec-timeout 15 0                                           (M)
+line vty 5 15 privilege level 15                                          (M)
+line vty 5 15 ipv6 access-class Blocktelnet_v6 in                         (M)
+line vty 5 15 logging synchronous                                         (M)
+line vty 5 15 login authentication aaa-tacacs-login                       (M)
+line vty 5 15 transport input ssh                                         (M)
+line vty 5 15 transport output none                                       (M)
+!
+
+
+
+# NTP
+ntp source Loopback0                                                      (M)
+ntp server 24.232.1.115                                                   (M)
+ntp server 181.30.130.4                                                   (M)
+!
+
+
+
+# LOGGING
+no logging console                                           (M)
+login on-failure log                                         (M)
+no login on-success log                                      (M)
+logging trap warnings                                        (M)
+logging origin-id hostname                                   (M)
+logging facility local3                                      (M)
+logging source-interface Loopback0                           (M)
+logging host 10.200.60.49                                    (M)
+logging host 10.200.100.61                                   (M)
+
+
+# ARCHIVE
+archive
+log config
+log config logging enable                                                    (M,W)?
+log config logging size 1000                                                 (M,W)?
+log config hidexxxxs                                                          (M,W)?
+!
+
+
+
+# SNMP
+snmp-server group tapGroup v3 auth read CISCOVIEW write CISCOVIEW notify CISCOVIEW 	(M)
+snmp-server view SAA mgmt included	(M)
+snmp-server view SAA enterprises.4491 included	(M)
+snmp-server view cutdown iso included	(M)
+snmp-server view cutdown cbQosSetCfg excluded	(M)
+snmp-server view tapView mib-2 included	(M)
+snmp-server view tapView system included	(M)
+snmp-server view tapView ciscoIpTapMIB included	(M)
+snmp-server view tapView cisco802TapMIB included	(M)
+snmp-server view tapView ciscoTap2MIB included	(M)
+snmp-server view CISCOVIEW iso included	(M)
+snmp-server view CISCOVIEW docsIf31CmtsCmUsOfdmaChannelStatusEntry included	(M)
+snmp-server view CISCOVIEW docsIf31CmtsCmUsOfdmaProfileStatusEntry included	(M)
+snmp-server view CONFIGBACKUP ciscoConfigCopyMIB included	(M)
+snmp-server community 3Csuph3mdtlr# view CISCOVIEW RO ACL10	(M)
+snmp-server community tCClqhq3C3# view cutdown RW ACL10	(M)
+snmp-server trap-source Loopback0	(M)
+snmp-server location Litoral	(M)
+snmp-server contact Fibertel	(M)
+snmp-server enable traps snmp authentication linkdown linkup coldstart warmstart	(M)
+snmp-server enable traps call-home message-send-fail server-fail	(M)
+snmp-server enable traps tty	(M)
+snmp-server enable traps aaa_server	(M)
+snmp-server enable traps memory bufferpeak	(M)
+snmp-server enable traps config-copy	(M)
+snmp-server enable traps config	(M)
+snmp-server enable traps fru-ctrl	(M)
+snmp-server enable traps entity	(M)
+snmp-server enable traps pim neighbor-change	(M)
+snmp-server enable traps cpu threshold	(M)
+snmp-server enable traps l2tun session	(M)
+snmp-server enable traps l2tun pseudowire status	(M)
+snmp-server enable traps cable	(M)
+snmp-server enable traps docsis-cmts	(M)
+snmp-server enable traps flash insertion	(M)
+snmp-server enable traps flash removal	(M)
+snmp-server enable traps envmon fan shutdown supply temperature status	(M)
+snmp-server enable traps cef resource-failure peer-state-change peer-fib-state-change inconsistency	(M)
+snmp-server enable traps alarms major	(M)
+snmp-server enable traps rf	(M)
+snmp-server enable traps transceiver all	(M)
+snmp-server host 172.20.3.130 version 2c 3Csuph3mdtlr#  bgp alarms memory config-copy config cpu cable envmon rf snmp	(M)
+snmp-server host 172.20.3.131 version 2c 3Csuph3mdtlr#  bgp alarms memory config-copy config cpu cable envmon rf snmp	(M)
+snmp-server host 186.153.155.235 version 2c 3Csuph3mdtlr#  bgp alarms memory config-copy config cpu cable envmon rf snmp	(M)
+snmp-server host 186.153.155.236 version 2c 3Csuph3mdtlr#  bgp alarms memory config-copy config cpu cable envmon rf snmp	(M)
+snmp-server manager	(M)
+snmp ifmib ifindex persist	(M)
+
+# ALIAS
+alias exec scpu show proc cpu | ex 0.00	(M)
+alias exec scm show cable modem	(M)
+alias exec scmt show cable modem summary total	(M)
+alias exec scmtp show cable modem primary-channel summary total	(M)
+alias exec ccm clear cable modem 	(M)
+alias exec marca show cable modem vendor | include	(M)
+alias exec scf show cable modem flap	(M)
+
+
+# USERNAME
+username pim-p password 7 [[xxx]]                                  (M)                                          
+username pim-i password 7 [[xxx]]                                  (M)
+username pim-m password 7 [[xxx]]                                  (M)
+username atr password 7 [[xxx]]                                    (M)
+username aseguramiento password 7 [[xxxx]]                          (M)
+username cycladesro privilege 0 password 7 [[xxxx]]                 (M)
+username 4cC3S0T#l#C0m privilege 0 password 7 [[xxxx]]              (M)
+
+
+
+# SERVICIOS
+ip ftp source-interface Loopback0                     (M)
+no ip http server                                     (M)
+no ip http secure-server                              (M)
+ip http client source-interface Loopback0             (M)
+ip tftp source-interface Loopback0                    (M)
+ip ssh source-interface Loopback0                     (M)
+ip ssh version 2                                      (M)
+
+
+
+# OTROS
+service tcp-keepalives-in                                         (M)
+service timestamps debug datetime msec localtime                  (M)
+service timestamps log datetime msec localtime                    (M)
+service password-encryption                                       (M)
+service internal                                                  (M)
+service compress-config                                           (M)
+service sequence-numbers                                          (M)
+no platform punt-keepalive disable-kernel-core                    (M)
+platform punt-sbrl subscriber rate 8                              (M)
+platform ipccl log-history 0                                      (M)
+clock timezone BsAs -3 0                                          (M)
+clock calendar-valid                                              (M)
+
+
+
+# AAA
+aaa new-model                                                                         (M)
+aaa group server tacacs+ acs-server                                                   (M)
+aaa authentication login aaa-tacacs-login group acs-server local                      (M)
+aaa authorization exec aaa-tacacs-exec group acs-server local                         (M)
+aaa authorization commands 1 aaa-tacacs-cmm group acs-server local                    (M)
+aaa authorization commands 15 aaa-tacacs-cmm group acs-server local                   (M)
+aaa accounting exec aaa-tacacs-acc start-stop group acs-server                        (M)
+aaa accounting commands 1 aaa-tacacs-acc start-stop group acs-server                  (M)
+aaa accounting commands 15 aaa-tacacs-acc start-stop group acs-server                 (M)
+aaa session-id common                                                                 (M)
+
+
+
+
+# SERVER TACACS
+tacacs server ACS1.SLO1
+tacacs server ACS1.SLO1 address ipv4 10.200.100.33                              (M)
+tacacs server ACS1.SLO1 xxxx 7 [[xxxx]]                                           (M)
+tacacs server ACS1.HOR1
+tacacs server ACS1.HOR1 address ipv4 10.200.60.33                               (M)
+tacacs server ACS1.HOR1 xxxx 7 [[xxxx]]                                           (M)
+tacacs server ACS2.SLO1
+tacacs server ACS2.SLO1 address ipv4 10.200.100.34                              (M)
+tacacs server ACS2.SLO1 xxxx 7 [[xxxx]]                                           (M)
+tacacs server ACS2.HOR1
+tacacs server ACS2.HOR1 address ipv4 10.200.60.34                               (M)
+tacacs server ACS2.HOR1 xxxx 7 [[xxxx]]                                           (M) 
+!

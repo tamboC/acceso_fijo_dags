@@ -1,0 +1,6 @@
+Value board (\d+)
+Value modelo (\w+)
+Value estado (\w+)
+
+Start
+  ^\s+${board}\s+${modelo}\s+${estado} -> Record

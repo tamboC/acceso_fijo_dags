@@ -1,0 +1,10 @@
+---
+
+- name: -- GENERATE CONFIG INTERFACE CABLE - LINECARD {{ item }} --
+  set_fact:
+    texto: "{{ lookup('template', '{{ folder_templates }}/config_CBR8_interface_cable.j2') }}"
+  
+
+- name: -- APPEND CONFIGURATION DE FILE {{ inventory_hostname }}.cfg --
+  shell: echo "{{texto}}" >> {{folder_config}}/{{inventory_hostname}}.cfg
+  delegate_to: localhost   

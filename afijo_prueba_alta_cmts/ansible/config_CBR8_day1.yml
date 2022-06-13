@@ -1,0 +1,103 @@
+---
+- hosts: NE
+  gather_facts: false
+  connection: network_cli
+  debugger: never
+  vars:
+    folder_templates : '/usr/local/airflow/dags/cel_afijo/afijo_prueba_alta_cmts/ansible/templates'
+    folder_config: '/io/cel_afijo/tmp/alta_cmts/CBR8/'
+    folder_tasks: '/usr/local/airflow/dags/cel_afijo/afijo_prueba_alta_cmts/ansible/tasks'
+
+  tasks:
+
+  - block:      
+
+    - include_vars: "vars/form_vars.yml"
+    
+    - name: -- GENERATE CONFIG CABLE FILTER GROUP --
+      set_fact:
+        texto: "{{ lookup('template', '{{folder_templates }}/config_CBR8_cable_filter_group.cfg') }}"
+
+    - name: -- APPEND CONFIGURATION CABLE FILTER GROUP TO FILE {{ inventory_hostname }}.cfg --
+      shell: echo "{{texto}}" >> {{folder_config}}/{{inventory_hostname}}.cfg
+      delegate_to: localhost
+
+    - name: -- GENERATE CONFIGURATION DSG CHANNELS  --
+      set_fact:
+        texto: "{{ lookup('template', '{{folder_templates }}/config_CBR8_dsg.j2') }}"
+
+    - name: -- APPEND CONFIGURATION DSG CHANNELS TO FILE {{ inventory_hostname }}.cfg --
+      shell: echo "{{texto}}" >> {{folder_config}}/{{inventory_hostname}}.cfg
+      delegate_to: localhost   
+
+#    - name: -- CONFIGURE REDUNDANCY  --
+#      set_fact:
+#        texto: "{{ lookup('template', '{{folder_templates }}/config_CBR8_redundancy.j2') }}"
+
+#    - name: -- APPEND CONFIGURATION REDUNDANCY TO FILE {{ inventory_hostname }}.cfg --
+#      shell: echo "{{texto}}" >> {{folder_config}}/{{inventory_hostname}}.cfg
+#      delegate_to: localhost   
+
+#    - name: -- CONFIGURE CALL-HOME --
+#      set_fact:
+#        texto: "{{ lookup('template', '{{ folder_templates }}/config_CBR8_call-home.j2') }}"
+
+#    - name: -- APPEND CONFIGURATION CALL-HOME TO FILE {{ inventory_hostname }}.cfg --
+#      shell: echo "{{texto}}" >> {{folder_config}}/{{inventory_hostname}}.cfg
+#      delegate_to: localhost   
+
+    - name: -- GENERATE CONFIGURATION MODULATIONS PROFILES  --
+      set_fact:
+        texto: "{{ lookup('template', '{{ folder_templates }}/config_CBR8_dw_us_modulation_profile.j2') }}"
+
+    - name: -- APPEND CONFIGURATION MODULATIONS PROFILES {{ inventory_hostname }}.cfg --
+      shell: echo "{{texto}}" >> {{folder_config}}/{{inventory_hostname}}.cfg
+      delegate_to: localhost   
+
+    - name: -- GENERATE CONFIGURATION LOAD BALANCE  --
+      set_fact:
+        texto: "{{ lookup('template', '{{ folder_templates }}/config_CBR8_cable_load_balance.j2') }}"
+
+    - name: -- APPEND CONFIGURATION LOAD BALANCE {{ inventory_hostname }}.cfg --
+      shell: echo "{{texto}}" >> {{folder_config}}/{{inventory_hostname}}.cfg
+      delegate_to: localhost
+
+    - name: -- CONFIGURE MISCELLANEOUS  --
+      set_fact:
+        texto: "{{ lookup('template', '{{ folder_templates }}/config_CBR8_miscellaneous.j2') }}"
+
+    - name: -- APPEND CONFIGURATION MISCELLANEOUS {{ inventory_hostname }}.cfg --
+      shell: echo "{{texto}}" >> {{folder_config}}/{{inventory_hostname}}.cfg
+      delegate_to: localhost
+
+    - name: -- CONFIGURE CONFIGURE INTERFACE BUNDLE 1  --
+      set_fact:
+        texto: "{{ lookup('template', '{{ folder_templates }}/config_CBR8_interface_bundle1.j2') }}"
+
+    - name: -- APPEND CONFIGURATION INTERFACE BUNDLE 1 {{ inventory_hostname }}.cfg --
+      shell: echo "{{texto}}" >> {{folder_config}}/{{inventory_hostname}}.cfg
+      delegate_to: localhost      
+      
+    - name: -- GENERATE CONFIGURATION UPSTREAM CONTROLLER --
+      include_tasks: "{{ folder_tasks }}/config_CBR8_upstream_controller.yml"
+      with_items: "{{ linecards }}"
+
+    - name: -- GENERATE and APPLY CONFIGURATION INTEGRATED CONTROLLER --
+      include_tasks: "{{ folder_tasks }}/config_CBR8_integrated_controller.yml"
+      with_items: "{{ linecards }}"
+
+    - name: -- GENERATE and APPLY CONFIGURATION INTERFACE CABLE --
+      include_tasks: "{{ folder_tasks }}/config_CBR8_interface_cable.yml"
+      with_items: "{{ linecards }}"
+
+    - name: -- GENERATE and APPLY CONFIGURATION INTERFACE WIDEBAND --
+      include_tasks: "{{ folder_tasks }}/config_CBR8_interface_wideband.yml"
+      with_items: "{{ linecards }}"
+
+    - name: -- GENERATE and APPLY CONFIGURATION FIBER NODE --
+      include_tasks: "{{ folder_tasks }}/config_CBR8_fiber_node.yml"
+      with_items: "{{ linecards }}"
+
+    - name: -- GENERATE and APPLY CONFIGURATION INTERFACE CABLE NO SHUTDOWN --
+      include_tasks: tasks/config_CBR8_interface_cable_no_shutdown.yml
+      with_items: "{{ linecards }}"

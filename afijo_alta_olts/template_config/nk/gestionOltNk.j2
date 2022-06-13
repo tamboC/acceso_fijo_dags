@@ -1,0 +1,40 @@
+Se debe solicitar que, localmente , configuren lo siguiente en el equipo {{nameOlt}} 
+Ingresar con los siguientes accesos:
+
+USUARIO: isadmin
+PASSWORD: i$@mad-
+
+Cambiar PASSWORD por : ANS#150
+
+configure system id {{nameOlt}} 
+configure system security operator isadmin prompt "{{nameOlt}}:%s:%n%d%c"
+
+configure service ies 10000 customer 1 create
+configure service ies 10000 interface "Mgnt-Itf" create
+configure service ies 10000 interface "Mgnt-Itf" address {{ipGestionOlt}} {{maskGestionBin}}
+configure service ies 10000 interface "Mgnt-Itf" sap nt:vp:1:21 create
+configure service ies 10000 no shutdown
+
+configure router static-route 0.0.0.0/0 next-hop {{ipGestionBng}}
+
+configure port {{puerto1Olt}} ethernet no autonegotiate
+configure port {{puerto1Olt}} ethernet speed 10000
+configure port {{puerto1Olt}} ethernet category regular
+configure port {{puerto1Olt}} no shutdown
+
+configure port {{puerto2Olt}} ethernet no autonegotiate
+configure port {{puerto2Olt}} ethernet speed 10000
+configure port {{puerto2Olt}} ethernet category regular
+configure port {{puerto2Olt}} no shutdown
+
+configure lag 20
+configure lag 20 port {{puerto1Olt}}
+configure lag 20 port {{puerto2Olt}}
+configure lag 20 lacp active administrative-key 32768
+configure lag 20 no shutdown
+configure service vpls 21 v-vpls vlan 21 customer 1 create
+configure service vpls 21 sap lag-20:21 create
+configure service vpls 21 no shutdown
+
+admin save
+

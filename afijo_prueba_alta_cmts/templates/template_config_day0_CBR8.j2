@@ -1,0 +1,252 @@
+service tcp-keepalives-in
+service timestamps debug datetime msec localtime
+service timestamps log datetime msec localtime
+service password-encryption
+service internal
+service compress-config
+service sequence-numbers
+service call-home
+hostname {{cmtsNombre}}
+logging buffered 256000000 warnings 
+enable secret 9 $9$xtUGYapeWHyTh.$e52SIUrHef80F8xIDzuueCmZVnUZflzWEcpEcGScjdY! 
+aaa session-id common 
+! 
+aaa new-model 
+! 
+aaa group server tacacs+ acs-server 
+ server-private 200.43.9.251 key 7 0005010101551F0F01201E1E5948 
+ server-private 200.43.9.15 key 7 011214035E0512062F4D1C594954 
+ ip tacacs source-interface Loopback0 
+!	 
+username cycladesro privilege 0 secret 9 $9$FcIbPw3cJHdtLU$AHAGDiwqQJjav0I4/xogesnwjtG/Z2bOan7cRoG0czA
+username 4cC3S0T#l#C0m privilege 15 secret 9 $9$5BhmHvYcsuB5j.$TO8G6SdUtrvcmCHDoXKqm6pKS2RLbVwaeDuFkc2T6.c
+username x304372 privilege 0 secret 9 $9$dYUb9vzkp9sJSU$g/ZbW7Ge/Tfn97vCiAjykF.kn6PXVzS3vsuCgJ/V7WA
+! 
+aaa authentication login aaa-tacacs-login local group acs-server 
+aaa authorization exec aaa-tacacs-exec local group acs-server 
+aaa authorization commands 1 aaa-tacacs-cmm local group acs-server 
+aaa authorization commands 15 aaa-tacacs-cmm local group acs-server
+aaa accounting exec aaa-tacacs-acc start-stop group acs-server
+aaa accounting commands 0 aaa-tacacs-acc start-stop group acs-server
+aaa accounting commands 1 aaa-tacacs-acc start-stop group acs-server
+aaa accounting commands 15 aaa-tacacs-acc start-stop group acs-server
+aaa session-id common
+!
+clock timezone BsAs -3 0
+clock calendar-valid
+!
+interface Port-channel1
+ mtu 2000 
+ no ip address 
+ no ip redirects 
+ no ip unreachables 
+ no ip proxy-arp 
+ no ipv6 redirects 
+ no ipv6 unreachables
+ no shutdown
+!
+
+{% set number = portchannel | int %}
+{% for interface in range(0,number) %}
+interface TenGigabitEthernet4/1/{{interface}}
+ no ip address 
+ load-interval 30 
+ channel-group 1 mode active 
+ no shutdown
+!
+interface TenGigabitEthernet5/1/{{interface}}
+ no ip address 
+ load-interval 30 
+ channel-group 1 mode active 
+ no shutdown
+! 
+{% endfor %}
+
+interface Loopback0 
+ ip address {{cmtsLoopDirIPv4}} 255.255.255.255 
+ no ip redirects 
+ no ip unreachables 
+{% if loopbackIPv6 %}
+ ipv6 address {{cmtsLoopDirIPv6}}/128 
+ ipv6 enable 
+ no ipv6 redirects 
+ no ipv6 unreachables 
+ ipv6 ospf 1 area 131 
+{% endif %}
+! 
+
+
+
+{% set ipv4_gestion = cmtsDatosIPv4.split('.') %}
+interface Port-channel1.10
+ description "Datos" 
+ encapsulation dot1Q 301{{vlanNro}}
+ ip address {{ ipv4_gestion[0] }}.{{ ipv4_gestion[1] }}.{{ ipv4_gestion[2] }}.{{ ipv4_gestion[3]|int +2 }} 255.255.255.252 
+ no ip redirects 
+ no ip unreachables 
+ no ip proxy-arp 
+ ip pim sparse-mode 
+ ip igmp version 3 
+ {% if datosVlanIPv6 %}
+ ipv6 address {{cmtsDatosIPv6}}/64
+ ipv6 enable 
+ no ipv6 redirects 
+ no ipv6 unreachables 
+ {% endif %}
+! 
+
+{% set ipv4_control = cmtsControlIPv4.split('.') %}
+interface Port-channel1.12
+ description "Control" 
+ encapsulation dot1Q 303{{vlanNro}}
+ ip address {{ ipv4_control[0] }}.{{ ipv4_control[1] }}.{{ ipv4_control[2] }}.{{ ipv4_control[3]|int +2 }} 255.255.255.252 
+ no ip redirects 
+ no ip unreachables 
+ no ip proxy-arp 
+ ip pim sparse-mode 
+ ip igmp version 3 
+! 
+
+{% set ipv4_toip = cmtsToipIPv4.split('.') %}
+interface Port-channel1.13
+ description "ToIP" 
+ encapsulation dot1Q 316{{vlanNro}}
+ ip address {{ ipv4_toip[0] }}.{{ ipv4_toip[1] }}.{{ ipv4_toip[2] }}.{{ ipv4_toip[3]|int +2 }} 255.255.255.252 
+ no ip redirects 
+ no ip unreachables 
+ no ip proxy-arp 
+ ip pim sparse-mode 
+ ip igmp version 3 
+! 
+
+
+router bgp 6458{{vlanNro}} 
+ bgp router-id {{cmtsLoopDirIPv4}} 
+ bgp log-neighbor-changes 
+
+ neighbor {{ ipv4_gestion[0] }}.{{ ipv4_gestion[1] }}.{{ ipv4_gestion[2] }}.{{ ipv4_gestion[3]|int +1 }} remote-as 7303
+ neighbor {{ ipv4_gestion[0] }}.{{ ipv4_gestion[1] }}.{{ ipv4_gestion[2] }}.{{ ipv4_gestion[3]|int +1 }} password ocons3Kgdb
+ neighbor {{ ipv4_gestion[0] }}.{{ ipv4_gestion[1] }}.{{ ipv4_gestion[2] }}.{{ ipv4_gestion[3]|int +1 }} update-source Port-channel1.10 
+ neighbor {{ ipv4_gestion[0] }}.{{ ipv4_gestion[1] }}.{{ ipv4_gestion[2] }}.{{ ipv4_gestion[3]|int +1 }} ha-mode graceful-restart 
+ 
+  
+ neighbor {{ ipv4_control[0] }}.{{ ipv4_control[1] }}.{{ ipv4_control[2] }}.{{ ipv4_control[3]|int +1 }}  remote-as 7303
+ neighbor {{ ipv4_control[0] }}.{{ ipv4_control[1] }}.{{ ipv4_control[2] }}.{{ ipv4_control[3]|int +1 }} password 7 ocons3Kgdb
+ neighbor {{ ipv4_control[0] }}.{{ ipv4_control[1] }}.{{ ipv4_control[2] }}.{{ ipv4_control[3]|int +1 }} update-source Port-channel1.12
+ neighbor {{ ipv4_control[0] }}.{{ ipv4_control[1] }}.{{ ipv4_control[2] }}.{{ ipv4_control[3]|int +1 }} ha-mode graceful-restart
+ 
+ neighbor {{ ipv4_toip[0] }}.{{ ipv4_toip[1] }}.{{ ipv4_toip[2] }}.{{ ipv4_toip[3]|int +1 }} remote-as 7303
+ neighbor {{ ipv4_toip[0] }}.{{ ipv4_toip[1] }}.{{ ipv4_toip[2] }}.{{ ipv4_toip[3]|int +1 }} password 7 ocons3Kgdb
+ neighbor {{ ipv4_toip[0] }}.{{ ipv4_toip[1] }}.{{ ipv4_toip[2] }}.{{ ipv4_toip[3]|int +1 }} update-source Port-channel1.13
+ neighbor {{ ipv4_toip[0] }}.{{ ipv4_toip[1] }}.{{ ipv4_toip[2] }}.{{ ipv4_toip[3]|int +1 }} ha-mode graceful-restart
+ !
+ address-family ipv4
+  redistribute connected metric 0
+  redistribute static metric 0 route-map IPV6-STATIC
+  neighbor {{ ipv4_gestion[0] }}.{{ ipv4_gestion[1] }}.{{ ipv4_gestion[2] }}.{{ ipv4_gestion[3]|int +1 }} activate
+  neighbor {{ ipv4_gestion[0] }}.{{ ipv4_gestion[1] }}.{{ ipv4_gestion[2] }}.{{ ipv4_gestion[3]|int +1 }} send-community
+  neighbor {{ ipv4_gestion[0] }}.{{ ipv4_gestion[1] }}.{{ ipv4_gestion[2] }}.{{ ipv4_gestion[3]|int +1 }} route-map set-community out
+  neighbor {{ ipv4_control[0] }}.{{ ipv4_control[1] }}.{{ ipv4_control[2] }}.{{ ipv4_control[3]|int +1 }} activate
+  neighbor {{ ipv4_toip[0] }}.{{ ipv4_toip[1] }}.{{ ipv4_toip[2] }}.{{ ipv4_toip[3]|int +1 }} activate
+  neighbor {{ ipv4_toip[0] }}.{{ ipv4_toip[1] }}.{{ ipv4_toip[2] }}.{{ ipv4_toip[3]|int +1 }} send-community
+  neighbor {{ ipv4_toip[0] }}.{{ ipv4_toip[1] }}.{{ ipv4_toip[2] }}.{{ ipv4_toip[3]|int +1 }} route-map set-community out
+ exit-address-family 
+ip ftp source-interface Loopback0 
+no ip http server 
+no ip http secure-server 
+ip tftp source-interface Loopback0 
+ip http client source-interface Loopback0 
+ip pim ssm range mcast-dsg 
+ip tacacs source-interface Loopback0 
+ip ssh source-interface Loopback0 
+ip ssh version 2 
+!
+ip bgp-community new-format 
+!
+ip access-list standard ACL10 
+ permit 181.30.130.4                 
+ permit 24.232.1.115 
+ permit 172.20.3.0 0.0.0.255  
+ permit 10.200.0.0 0.0.255.255 
+ permit 172.20.2.0 0.0.0.127  
+ permit 10.100.233.0 0.0.0.127  
+ permit 181.81.228.128 0.0.0.127 
+ permit 200.43.9.3           
+ permit 200.43.9.5           
+ permit 200.43.9.6           
+ permit 200.43.9.251       
+ permit 200.43.9.15             
+ permit 186.153.155.224 0.0.0.31 
+ permit 181.81.228.4
+ permit 181.81.226.192 0.0.0.31
+ 
+route-map set-community permit 10  
+ set community 65301:6458{{vlanNro}} 
+!
+route-map set-community permit 20 
+!
+route-map IPV6-STATIC permit 10 
+ match ipv6 address prefix-list IPV6-PD-NETS
+!
+route-map CONNECTED permit 10 
+ match interface Bundle1
+!
+banner motd ^C
+                ----------------------------------------
+                -                                      -
+                -           Telecom Argentina          -
+                -                                      -
+                -           --------0--------          -
+                -              ADVERTENCIA             -
+                -              -----------             -
+                -                                      -
+                -  Usted debe tener autorizacion de    -
+                -  acceso o para utilizar el sistema   -
+                -  Todas las conexiones se registran   -
+                -  y supervisan.                       -
+                -                                      -
+                -  El acceso o el uso desautorizado    -
+                -  sera procesado.                     -
+                -                                      -
+                -           -------0-------            -
+                -     Aseguramiento en Tiempo Real     -
+                - aseguramientotiemporeal@teco.com.ar  -
+                -   +5411 5530 6569 - 0810 122 2478    -
+                ----------------------------------------
+^C
+ 
+line con 0 
+ exec-timeout 60 0 
+ privilege level 15 
+ logging synchronous 
+ login authentication aaa-tacacs-login 
+ stopbits 1 
+! 
+line aux 0 
+ password 7 104D000A0618 
+ stopbits 1 
+! 
+line vty 0 4 
+access-class ACL10 in 
+ipv6 access-class Blocktelnet_v6 in 
+exec-timeout 15 0 
+privilege level 15 
+logging synchronous 
+login authentication aaa-tacacs-login 
+transport input ssh 
+transport output none 
+! 
+line vty 5 15 
+access-class ACL10 in 
+ipv6 access-class Blocktelnet_v6 in 
+exec-timeout 15 0 
+privilege level 15 
+logging synchronous 
+login authentication aaa-tacacs-login 
+transport input ssh 
+transport output none 
+! 
+ntp source Loopback0 
+ntp server 24.232.1.115 
+ntp server 181.30.130.4 
+! 

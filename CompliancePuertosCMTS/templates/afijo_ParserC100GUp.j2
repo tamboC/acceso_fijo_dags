@@ -1,0 +1,11 @@
+Value Required up_slot (\d+)
+Value Required up_conn (\d+)
+Value Required up_chann (\d+)
+Value frec_up (\d+)
+Value power_up (\d+)
+
+
+Start
+  ^interface upstream ${up_slot}\/${up_conn}\.${up_chann}
+  ^\s+frequency ${frec_up}
+  ^\s+power-level ${power_up} -> Record

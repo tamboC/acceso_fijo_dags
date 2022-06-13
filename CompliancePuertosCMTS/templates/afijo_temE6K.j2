@@ -1,0 +1,43 @@
+{#{% set temp = cmts_info.results | unique %}
+{% for item in temp %}
+CMTS = {{ item.item.CMTS }}
+mac_domain = {{ item.item.mac_domain }}
+up_slot = {{ item.item.up_slot }}
+up_conn = {{ item.item.up_conn }}
+dw_slot = {{ item.item.dw_slot }}
+dw_conn = {{ item.item.dw_conn }}
+{% endfor %}#}
+
+{% set temp = cmts_info.results|sort(attribute='item.mac_domain') %}
+{% for item in temp %}
+CMTS = {{ item.item.CMTS }}
+mac_domain = {{ item.item.mac_domain }}
+up_slot = {{ item.item.up_slot }}
+up_conn = {{ item.item.up_conn }}
+dw_slot = {{ item.item.dw_slot }}
+dw_conn = {{ item.item.dw_conn }}
+power-level = {{ item.item.up_power }} dbm
+frequency = {{ item.item.frequency }}
+BW = {{ item.item.BW }}
+profile = {{ item.item.profile }}
+{% endfor %}
+############################################################################################################################
+############################################FREQUENCIAS DW #################################################################
+############################################################################################################################
+{% set tempMAC = cmts_infoMAC.results|sort(attribute='item.mac') %}
+{% set tempdw = cmts_infoDW.results|sort(attribute='item.mac') %}
+{% for itemdw in tempdw %}
+{% for item in tempMAC %}
+{% if  itemdw.item.mac  == item.item.mac %}
+interfaceDW = {{ itemdw.item.interface }}
+mac_domain = {{ itemdw.item.mac }}
+{% if  itemdw.item.freq_cen  != "" %}
+frequenciaDW = {{ itemdw.item.freq_cen }}
+{% endif %}
+{% if  itemdw.item.high_freq != "" %}
+frequenciaQAM = NO TIENE
+frequenciaOFDM = {{ itemdw.item.high_freq }}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endfor %}

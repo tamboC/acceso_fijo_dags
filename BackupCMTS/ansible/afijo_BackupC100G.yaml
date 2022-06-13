@@ -1,0 +1,30 @@
+---
+- name: Backup C100G
+  connection: network_cli
+  gather_facts: false
+  hosts: CMTS_CASA
+
+  tasks:
+    - name: Backup C100G 
+      ios_command:
+        commands: 
+          -  page-off
+          -  show running-config
+      register: command_output_casa
+      when: "'CMTS_CASA' in group_names" 
+      ignore_errors: true
+
+    #- debug:
+    #    msg: "{{ command_output_casa.stdout }}"
+
+    - name: Creo el directorio para guardar el backup
+      file:
+        path: /usr/local/backup/CMTS/{{nombre}}/configs/
+        state: directory
+      delegate_to: localhost
+
+    - name: Copio salida de C100G
+      copy:
+        content: "{{ command_output_casa.stdout[1] }}"
+        dest: /usr/local/backup/CMTS/{{nombre}}/configs/CASA_{{nombre}}_{{now().strftime("%d-%m-%y_%H-%M")}}.bkp 
+      delegate_to: localhost

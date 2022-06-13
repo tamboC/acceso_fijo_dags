@@ -1,0 +1,228 @@
+Se debe solicitar que, localmente , configuren lo siguiente en el equipo {{nameOlt}} 
+Ingresar con los siguientes accesos: 
+ 
+
+USUARIO: root 
+PASSWORD: admin123 
+
+El sistema le pedira cambiar la password, coloque la nueva Anacrusa7900#:
+
+When you firet log on the system. Change your password
+New Password(length<12,15>): Anacrusa7900#
+ 
+enable 
+
+config 
+ 
+board confirm 0 
+
+
+###SE DEBE AGUARDAR A QUE TERMINE EL PROCESO DE REGISTRO #### 
+
+sysname {{nameOlt}} 
+
+timezone GMT- 3:00 
+
+autosave type all 
+
+autosave time 03:00:00 
+
+autosave interval on 
+
+{% if versionOlt == "MA5800-X15"  %}
+     
+board add 0/18 H902PILA 
+
+board add 0/19 H902PILA 
+
+interface mpu {{puerto1Olt}} 
+
+ auto-neg 0 disable 
+
+ network-role 0 uplink 
+
+ duplex all full 
+
+ shutdown 1 
+
+ shutdown 2 
+
+ shutdown 3 
+
+ exit 
+
+ 
+interface mpu {{puerto2Olt}} 
+
+ auto-neg 0 disable 
+
+ network-role 0 uplink 
+
+ duplex all full 
+
+ shutdown 1 
+
+ shutdown 2 
+
+ shutdown 3 
+
+ exit 
+
+
+vlan 21 standard 
+
+port vlan 21 {{puerto1Olt}} 0 
+
+
+interface vlanif 21 
+
+ip address {{ipGestionOlt}} {{maskGestionBin}}
+
+quit 
+
+
+ip route-static 0.0.0.0 0.0.0.0 {{ipGestionBng}} preference 1  
+
+link-aggregation {{puerto1Olt}} 0 egress-ingress workmode lacp-static  
+
+link-aggregation add-member {{puerto1Olt}}/0 {{puerto2Olt}} 0 
+ 
+{% endif %}
+
+{% if versionOlt == "MA5800-X17"  %}
+
+board add 0/20 H902PILA 
+
+board add 0/21 H902PILA 
+
+ 
+interface mpu {{puerto1Olt}} 
+
+ auto-neg 0 disable 
+
+ network-role 0 uplink 
+
+ duplex all full 
+
+ shutdown 1 
+
+ shutdown 2 
+
+ shutdown 3 
+
+ quit 
+
+
+interface mpu {{puerto2Olt}} 
+
+ auto-neg 0 disable 
+
+ network-role 0 uplink 
+
+ duplex all full 
+
+ shutdown 1 
+
+ shutdown 2 
+
+ shutdown 3 
+
+ quit 
+
+  
+
+vlan 21 standard 
+
+port vlan 21 {{puerto1Olt}} 0 
+
+interface vlanif 21 
+
+ip address {{ipGestionOlt}} {{maskGestionBin}}  
+
+quit 
+
+ip route-static 0.0.0.0 0.0.0.0 {{ipGestionBng}} preference 1 
+
+link-aggregation {{puerto1Olt}} 0 egress-ingress workmode lacp-static  
+
+
+link-aggregation add-member {{puerto1Olt}}/0 {{puerto2Olt}} 0 
+
+
+{% endif %} 
+
+{% if versionOlt == "MA5800-X2"  %}
+
+board add 0/0 H902PISA  
+ 
+interface mpu {{puerto1Olt}} 
+
+ auto-neg 0 disable 
+
+ network-role 0 uplink 
+
+ duplex all full 
+
+ shutdown 1 
+
+ shutdown 2 
+
+ shutdown 3 
+
+ quit 
+
+
+interface mpu {{puerto2Olt}} 
+
+ auto-neg 0 disable 
+
+ network-role 0 uplink 
+
+ duplex all full 
+
+ shutdown 1 
+
+ shutdown 2 
+
+ shutdown 3 
+
+ quit 
+
+  
+
+vlan 21 standard 
+
+port vlan 21 {{puerto1Olt}} 0 
+
+interface vlanif 21 
+
+ip address {{ipGestionOlt}} {{maskGestionBin}}  
+
+quit 
+
+ip route-static 0.0.0.0 0.0.0.0 {{ipGestionBng}} preference 1 
+
+link-aggregation {{puerto1Olt}} 0 egress-ingress workmode lacp-static  
+
+
+link-aggregation add-member {{puerto1Olt}}/0 {{puerto2Olt}} 0 
+
+
+{% endif %} 
+ 
+sysman service telnet enable
+
+sysman source trap vlanif 21
+
+sysman server source ssh meth 0
+
+sysman server source ssh vlanif 21
+
+sysman server source snmp vlanif 21
+
+sysman server source snmp any-interface
+
+sysman server source telnet vlanif 21
+
+save
+

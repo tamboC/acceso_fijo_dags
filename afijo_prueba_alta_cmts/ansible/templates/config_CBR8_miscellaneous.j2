@@ -1,0 +1,195 @@
+service tcp-keepalives-in
+service timestamps debug datetime msec localtime
+service timestamps log datetime msec localtime
+service password-encryption
+service internal
+service compress-config
+service sequence-numbers
+service call-home
+!
+logging buffered 256000000 warnings
+enable secret 9 $9$xtUGYapeWHyTh.$e52SIUrHef80F8xIDzuueCmZVnUZflzWEcpEcGScjdY
+!
+cable logging badipsource 1048576
+cable logging layer2events
+cable logging overlapip
+cable logging downstream-index
+cable primary-sflow-qos11 keep all
+cable throttle-modem init-rate 32 holdoff-time 45 flush-rate 300
+cable us-freq-use-cm-cap
+cable admission-control preempt priority-voice
+!
+cable l2-vpn-service xconnect nsi dot1q interface Port-channel1
+!
+cable metering ipdr-d3 session 1 type 2 full-records
+cable modem max-cpe 48
+cable source-verify leasequery-filter downstream 3 5
+!
+cable ipv6 source-verify leasequery-filter downstream 3 5
+!
+cable acfe enable
+cable acfe period 30
+cable util-interval 500
+cable license enable-CPB
+!
+cable resiliency ds-bonding
+cable qos permission create
+cable qos permission update
+cable qos permission modems
+cable privacy hotlist cm 000f.21de.ad01
+cable service attribute ds-bonded downstream-type bonding-enabled enforce
+cable service attribute withhold-tlvs peak-rate
+!
+cable multicast auth enable default-action deny max-sessions 20
+cable wideband auto-reset
+!
+no ip source-route
+no ip gratuitous-arps
+!
+
+no ip bootp server
+no ip domain lookup
+ip multicast-routing distributed
+ip dhcp relay information option
+no ip dhcp relay information check
+!
+!
+!
+login on-failure log
+no login on-success log
+ipv6 unicast-routing
+ipv6 dhcp-relay bulk-lease disable
+ipv6 cef distributed
+!
+l2vpn
+multilink bundle-name authenticated
+packetcable authorize vanilla-docsis-mta
+packetcable gate send-subscriberID
+packetcable multimedia
+packetcable
+!
+archive
+ log config
+  logging enable
+  logging size 1000
+  hidekeys
+!
+class-map match-all VOIP_SIG
+ match ip dscp af31 
+class-map match-any VOIP_RTP
+ match ip dscp ef 
+ match ip precedence 5 
+!
+policy-map VOIP
+ class VOIP_SIG
+  bandwidth remaining percent 1 
+ class VOIP_RTP
+  priority
+!
+logging trap warnings
+logging origin-id hostname
+logging facility local3
+logging source-interface Loopback0
+logging host 10.200.60.49
+logging host 10.200.100.61
+!
+!
+snmp-server group tapGroup v3 auth read CISCOVIEW write CISCOVIEW notify CISCOVIEW 
+snmp-server view SAA mgmt included
+snmp-server view SAA enterprises.4491 included
+snmp-server view cutdown iso included
+snmp-server view cutdown cbQosSetCfg excluded
+snmp-server view tapView mib-2 included
+snmp-server view tapView system included
+snmp-server view tapView ciscoIpTapMIB included
+snmp-server view tapView cisco802TapMIB included
+snmp-server view tapView ciscoTap2MIB included
+snmp-server view CISCOVIEW iso included
+snmp-server view CISCOVIEW docsIf31CmtsCmUsOfdmaChannelStatusEntry included
+snmp-server view CISCOVIEW docsIf31CmtsCmUsOfdmaProfileStatusEntry included
+snmp-server view CONFIGBACKUP ciscoConfigCopyMIB included
+snmp-server community 3Csuph3mdtlr# view CISCOVIEW RO ACL10
+snmp-server community tCClqhq3C3# view cutdown RW ACL10
+snmp-server trap-source Loopback0
+snmp-server location Litoral
+snmp-server contact Fibertel
+snmp-server enable traps snmp authentication linkdown linkup coldstart warmstart
+snmp-server enable traps call-home message-send-fail server-fail
+snmp-server enable traps tty
+snmp-server enable traps aaa_server
+snmp-server enable traps memory bufferpeak
+snmp-server enable traps config-copy
+snmp-server enable traps config
+snmp-server enable traps fru-ctrl
+snmp-server enable traps entity
+snmp-server enable traps pim neighbor-change
+snmp-server enable traps cpu threshold
+snmp-server enable traps l2tun session
+snmp-server enable traps l2tun pseudowire status
+snmp-server enable traps cable
+snmp-server enable traps docsis-cmts
+snmp-server enable traps flash insertion
+snmp-server enable traps flash removal
+snmp-server enable traps envmon fan shutdown supply temperature status
+snmp-server enable traps cef resource-failure peer-state-change peer-fib-state-change inconsistency
+snmp-server enable traps alarms major
+snmp-server enable traps rf
+snmp-server enable traps transceiver all
+snmp-server host 172.20.3.130 version 2c 3Csuph3mdtlr#  bgp alarms memory config-copy config cpu cable envmon rf snmp
+snmp-server host 172.20.3.131 version 2c 3Csuph3mdtlr#  bgp alarms memory config-copy config cpu cable envmon rf snmp
+snmp-server host 186.153.155.235 version 2c 3Csuph3mdtlr#  bgp alarms memory config-copy config cpu cable envmon rf snmp
+snmp-server host 186.153.155.236 version 2c 3Csuph3mdtlr#  bgp alarms memory config-copy config cpu cable envmon rf snmp
+snmp-server manager
+snmp ifmib ifindex persist
+!
+alias exec scpu show proc cpu | ex 0.00
+alias exec scm show cable modem
+alias exec scmt show cable modem summary total
+alias exec scmtp show cable modem primary-channel summary total
+alias exec ccm clear cable modem 
+alias exec marca show cable modem vendor | include
+alias exec scf show cable modem flap
+!
+ipv6 route 2800:2168:2000::/37 Bundle1
+ipv6 route 2800:2368:2000::/37 Bundle1
+!
+!
+ipv6 prefix-list IPV6-PD-NETS seq 10 permit 2800:2168:2000::/37
+ipv6 prefix-list IPV6-PD-NETS seq 20 permit 2800:2368:2000::/37
+nls resp-timeout 1
+cpd cr-id 1
+route-map set-community permit 10 
+ set community 65301:64584 65440:64583
+!
+route-map set-community permit 20 
+!
+route-map IPV6-STATIC permit 10 
+ match ipv6 address prefix-list IPV6-PD-NETS
+!
+route-map CONNECTED permit 10 
+ match interface Bundle1
+!
+! ### CALL HOME 
+call-home
+ contact-email-addr AE-ACC@cablevision.com.ar
+ source-interface Loopback0
+ profile "CiscoTAC-1"
+  no reporting smart-call-home-data
+  destination address http https://10.200.200.250:443/Transportgateway/services/DeviceRequestHandler
+  no destination address http https://tools.cisco.com/its/service/oddce/services/DDCEService
+!
+! ### REDUNDANCY 
+redundancy
+ mode sso
+ linecard-group 0 internal-switch
+  class 1:N
+{% for l in linecards %}
+  member slot {{ l }} primary
+{% endfor %}
+  member slot 0 secondary
+  no revertive
+  main-cpu
+  standby console enable
+  exit
+ exit
+!

@@ -1,0 +1,137 @@
+interface TenGigabitEthernet4/1/0
+interface TenGigabitEthernet4/1/0 no ip address
+interface TenGigabitEthernet4/1/0 load-interval 30
+interface TenGigabitEthernet4/1/0 channel-group 1 mode active
+
+interface TenGigabitEthernet5/1/0
+interface TenGigabitEthernet5/1/0 no ip address
+interface TenGigabitEthernet5/1/0 load-interval 30
+interface TenGigabitEthernet5/1/0 channel-group 1 mode active
+
+interface Loopback0
+interface Loopback0 ip address <IPv4_Loopback / 32> 255.255.255.255
+interface Loopback0 no ip redirects
+interface Loopback0 no ip unreachables
+interface Loopback0 ipv6 address <IPv6_Loopback / 128>
+interface Loopback0 ipv6 enable
+interface Loopback0 no ipv6 redirects
+interface Loopback0 no ipv6 unreachables
+
+interface Port-channel1
+interface Port-channel1 mtu 2000
+interface Port-channel1 no ip address
+interface Port-channel1 no ip redirects
+interface Port-channel1 no ip unreachables
+interface Port-channel1 no ip proxy-arp
+interface Port-channel1 no ipv6 redirects
+interface Port-channel1 no ipv6 unreachables
+
+interface Port-channel1.10
+interface Port-channel1.10 description "Datos"
+interface Port-channel1.10 encapsulation dot1Q 3014
+interface Port-channel1.10 ip address <IPv4 /30 Datos> 255.255.255.252
+interface Port-channel1.10 no ip redirects
+interface Port-channel1.10 no ip unreachables
+interface Port-channel1.10 no ip proxy-arp
+interface Port-channel1.10 ip pim sparse-mode
+interface Port-channel1.10 ip igmp version 3
+interface Port-channel1.10 ipv6 address <IPv6 /64 Datos>/64
+interface Port-channel1.10 ipv6 enable
+interface Port-channel1.10 no ipv6 redirects
+interface Port-channel1.10 no ipv6 unreachables
+
+interface Port-channel1.12
+interface Port-channel1.12 description "Control"
+interface Port-channel1.12 encapsulation dot1Q 3034
+interface Port-channel1.12 ip address <IP /30 Control> 255.255.255.252
+interface Port-channel1.12 ip pim sparse-mode
+
+interface Port-channel1.13
+interface Port-channel1.13 description "ToIP"
+interface Port-channel1.13 encapsulation dot1Q 3164
+interface Port-channel1.13 ip address <IP /30 ToIP> 255.255.255.252
+
+interface Port-channel1.14
+interface Port-channel1.14 description "PICO-CELL"
+interface Port-channel1.14 encapsulation dot1Q 3200
+interface Port-channel1.14 ip address <IP /30 PICO-CELL> 255.255.255.252
+
+
+router bgp 64584
+router bgp 64584 bgp router-id 10.100.150.21
+router bgp 64584 bgp log-neighbor-changes
+router bgp 64584 neighbor <IP ROA /30 Datos> remote-as <AS PUBLICO 7303 / 10481 segun corresponda>
+router bgp 64584 neighbor <IP ROA /30 Datos> password 7 ocons3Kgdb
+router bgp 64584 neighbor <IP ROA /30 Datos> update-source Port-channel1.10
+router bgp 64584 neighbor <IP ROA /30 Datos> ha-mode graceful-restart
+router bgp 64584 neighbor <IP ROA /30 Control> remote-as <AS PUBLICO 7303 / 10481 segun corresponda>
+router bgp 64584 neighbor <IP ROA /30 Control> password 7 ocons3Kgdb
+router bgp 64584 neighbor <IP ROA /30 Control> update-source Port-channel1.12
+router bgp 64584 neighbor <IP ROA /30 Control> ha-mode graceful-restart
+router bgp 64584 neighbor <IP ROA /30 ToIP> remote-as <AS PUBLICO 7303 / 10481 segun corresponda>
+router bgp 64584 neighbor <IP ROA /30 ToIP> password 7 ocons3Kgdb
+router bgp 64584 neighbor <IP ROA /30 ToIP> update-source Port-channel1.13
+router bgp 64584 neighbor <IP ROA /30 ToIP> ha-mode graceful-restart
+router bgp 64584 neighbor <IP ROA /30 PICO-CELL> remote-as <AS PUBLICO 7303 / 10481 segun corresponda>
+router bgp 64584 neighbor <IP ROA /30 PICO-CELL> password ocons3Kgdb
+router bgp 64584 neighbor <IP ROA /30 PICO-CELL> update-source Port-channel1.14
+router bgp 64584 neighbor <IP ROA /30 PICO-CELL> ha-mode graceful-restart
+router bgp 64584 neighbor 2800:2F25:C00B:8::1 remote-as <AS PUBLICO 7303 / 10481 segun corresponda>
+router bgp 64584 neighbor 2800:2F25:C00B:8::1 password 7 ocons3Kgdb
+router bgp 64584 neighbor 2800:2F25:C00B:8::1 update-source Port-channel1.10
+router bgp 64584 neighbor 2800:2F25:C00B:8::1 ha-mode graceful-restart
+
+address-family ipv4
+address-family ipv4 redistribute connected metric 0
+address-family ipv4 neighbor 10.101.1.1 activate
+address-family ipv4 neighbor 10.101.1.1 send-community
+address-family ipv4 neighbor 10.101.1.1 route-map set-community out
+address-family ipv4 neighbor 10.101.60.17 activate
+address-family ipv4 neighbor 10.101.60.197 activate
+address-family ipv4 neighbor 10.101.60.197 send-community
+address-family ipv4 neighbor 10.101.60.197 route-map set-community out
+address-family ipv4 neighbor <IP ROA /30 PICO-CELL> activate
+address-family ipv4 neighbor <IP ROA /30 PICO-CELL> send-community
+address-family ipv4 neighbor <IP ROA /30 PICO-CELL> route-map (BGPCOMM/set-community) out
+address-family ipv4 no neighbor 2800:2F25:C00B:8::1 activate
+exit-address-family
+
+address-family ipv6
+address-family ipv6 redistribute connected metric 0
+address-family ipv6 redistribute static metric 0 route-map IPV6-STATIC
+address-family ipv6 neighbor 2800:2F25:C00B:8::1 activate
+exit-address-family
+
+ip forward-protocol nd
+
+ip bgp-community new-format
+
+ip ftp source-interface Loopback0
+no ip http server
+no ip http secure-server
+ip tftp source-interface Loopback0
+ip http client source-interface Loopback0
+ip pim ssm range mcast-dsg
+ip tacacs source-interface Loopback0
+ip ssh source-interface Loopback0
+ip ssh version 2
+
+
+ipv6 route 2800:2168:2000::/37 Bundle1                                                                 (M,W?)
+ipv6 route 2800:2368:2000::/37 Bundle1                                                                 (M,W?)
+!
+!
+ipv6 prefix-list IPV6-PD-NETS seq 10 permit 2800:2168:2000::/37                                        (M,W?)
+ipv6 prefix-list IPV6-PD-NETS seq 20 permit 2800:2368:2000::/37                                        (M,W?)
+nls resp-timeout 1                                                                                     (M)
+cpd cr-id 1                                                                                            (M)
+route-map set-community permit 10                                                                      (M)
+route-map set-community permit 10 set community 65301:64584 65440:64583                                (M)
+!
+route-map set-community permit 20                                                                      (M)
+!
+route-map IPV6-STATIC permit 10                                                                        (M)
+route-map IPV6-STATIC permit 10 match ipv6 address prefix-list IPV6-PD-NETS                            (M)
+!
+route-map CONNECTED permit 10                                                                          (M)
+route-map CONNECTED permit 10  match interface Bundle1                                                 (M)

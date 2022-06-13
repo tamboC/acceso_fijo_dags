@@ -1,0 +1,188 @@
+{% if dsg == true %} 
+ip access-list standard mcast-dsg
+ permit 239.1.1.0 0.0.0.255
+ permit 232.232.232.0 0.0.0.255
+ permit 239.1.2.0 0.0.0.255
+!
+cable dsg client-list 100 id-index 1 ca-system-id {{ caSysId_100 }}
+cable dsg client-list 200 id-index 1 ca-system-id {{ caSysId_200 }}
+cable dsg client-list 300 id-index 1 application-id {{ appId }}
+cable dsg tg 100
+cable dsg tg 100 channel 1
+cable dsg tg 100 channel 2
+cable dsg tg 100 channel 3
+cable dsg tg 100 channel 4
+cable dsg tg 100 channel 5
+cable dsg tg 100 channel 6
+cable dsg tg 100 channel 7
+cable dsg tg 100 channel 8
+cable dsg tg 100 channel 9
+cable dsg tg 100 channel 10
+cable dsg tg 100 channel 11
+cable dsg tg 100 channel 12
+cable dsg tg 100 channel 13
+cable dsg tg 100 channel 14
+cable dsg tg 100 channel 15
+cable dsg tg 100 channel 16
+cable dsg tg 100 channel 17
+cable dsg tg 100 channel 18
+cable dsg tg 100 channel 19
+cable dsg tg 100 channel 20
+cable dsg tg 100 channel 21
+cable dsg tg 100 channel 22
+cable dsg tg 100 channel 23
+cable dsg tg 100 channel 24
+cable dsg tg 100 channel 25
+cable dsg tg 100 channel 26
+cable dsg tg 100 channel 27
+cable dsg tg 100 channel 28
+cable dsg tg 100 channel 29
+cable dsg tg 100 channel 30
+cable dsg tg 100 channel 31
+cable dsg tg 100 channel 32
+cable dsg tg 100 channel 33
+cable dsg tg 100 channel 34
+cable dsg tg 100 channel 35
+cable dsg tg 100 channel 36
+cable dsg tg 100 channel 37
+cable dsg tg 100 channel 38
+cable dsg tg 100 channel 39
+cable dsg tg 100 channel 40
+cable dsg tg 100 channel 41
+cable dsg tg 100 channel 42
+cable dsg tg 100 channel 43
+cable dsg tg 100 channel 44
+cable dsg tg 100 channel 45
+cable dsg tg 100 channel 46
+cable dsg tg 100 channel 47
+cable dsg tg 100 channel 48
+cable dsg tg 100 channel 49
+cable dsg tg 100 channel 50
+cable dsg tg 100 channel 51
+cable dsg tg 100 channel 52
+cable dsg tg 100 channel 53
+cable dsg tg 100 channel 54
+cable dsg tg 100 channel 55
+cable dsg tg 100 channel 56
+cable dsg tg 200
+cable dsg tg 200 channel 1
+cable dsg tg 200 channel 2
+cable dsg tg 200 channel 3
+cable dsg tg 200 channel 4
+cable dsg tg 200 channel 5
+cable dsg tg 200 channel 6
+cable dsg tg 200 channel 7
+cable dsg tg 200 channel 8
+cable dsg tg 200 channel 9
+cable dsg tg 200 channel 10
+cable dsg tg 200 channel 11
+cable dsg tg 200 channel 12
+cable dsg tg 200 channel 13
+cable dsg tg 200 channel 14
+cable dsg tg 200 channel 15
+cable dsg tg 200 channel 16
+cable dsg tg 200 channel 17
+cable dsg tg 200 channel 18
+cable dsg tg 200 channel 19
+cable dsg tg 200 channel 20
+cable dsg tg 200 channel 21
+cable dsg tg 200 channel 22
+cable dsg tg 200 channel 23
+cable dsg tg 200 channel 24
+cable dsg tg 200 channel 25
+cable dsg tg 200 channel 26
+cable dsg tg 200 channel 27
+cable dsg tg 200 channel 28
+cable dsg tg 200 channel 29
+cable dsg tg 200 channel 30
+cable dsg tg 200 channel 31
+cable dsg tg 200 channel 32
+cable dsg tg 200 channel 33
+cable dsg tg 200 channel 34
+cable dsg tg 200 channel 35
+cable dsg tg 200 channel 36
+cable dsg tg 200 channel 37
+cable dsg tg 200 channel 38
+cable dsg tg 200 channel 39
+cable dsg tg 200 channel 40
+cable dsg tg 200 channel 41
+cable dsg tg 200 channel 42
+cable dsg tg 200 channel 43
+cable dsg tg 200 channel 44
+cable dsg tg 200 channel 45
+cable dsg tg 200 channel 46
+cable dsg tg 200 channel 47
+cable dsg tg 200 channel 48
+cable dsg tg 200 channel 49
+cable dsg tg 200 channel 50
+cable dsg tg 200 channel 51
+cable dsg tg 200 channel 52
+cable dsg tg 200 channel 53
+cable dsg tg 200 channel 54
+cable dsg tg 200 channel 55
+cable dsg tg 200 channel 56
+cable dsg tg 300
+cable dsg tg 300 channel 1
+cable dsg tg 300 channel 2
+cable dsg tg 300 channel 3
+cable dsg tg 300 channel 4
+cable dsg tg 300 channel 5
+cable dsg tg 300 channel 6
+cable dsg tg 300 channel 7
+cable dsg tg 300 channel 8
+cable dsg tg 300 channel 9
+cable dsg tg 300 channel 10
+cable dsg tg 300 channel 11
+cable dsg tg 300 channel 12
+cable dsg tg 300 channel 13
+cable dsg tg 300 channel 14
+cable dsg tg 300 channel 15
+cable dsg tg 300 channel 16
+cable dsg tg 300 channel 17
+cable dsg tg 300 channel 18
+cable dsg tg 300 channel 19
+cable dsg tg 300 channel 20
+cable dsg tg 300 channel 21
+cable dsg tg 300 channel 22
+cable dsg tg 300 channel 23
+cable dsg tg 300 channel 24
+cable dsg tg 300 channel 25
+cable dsg tg 300 channel 26
+cable dsg tg 300 channel 27
+cable dsg tg 300 channel 28
+cable dsg tg 300 channel 29
+cable dsg tg 300 channel 30
+cable dsg tg 300 channel 31
+cable dsg tg 300 channel 32
+cable dsg tg 300 channel 33
+cable dsg tg 300 channel 34
+cable dsg tg 300 channel 35
+cable dsg tg 300 channel 36
+cable dsg tg 300 channel 37
+cable dsg tg 300 channel 38
+cable dsg tg 300 channel 39
+cable dsg tg 300 channel 40
+cable dsg tg 300 channel 41
+cable dsg tg 300 channel 42
+cable dsg tg 300 channel 43
+cable dsg tg 300 channel 44
+cable dsg tg 300 channel 45
+cable dsg tg 300 channel 46
+cable dsg tg 300 channel 47
+cable dsg tg 300 channel 48
+cable dsg tg 300 channel 49
+cable dsg tg 300 channel 50
+cable dsg tg 300 channel 51
+cable dsg tg 300 channel 52
+cable dsg tg 300 channel 53
+cable dsg tg 300 channel 54
+cable dsg tg 300 channel 55
+cable dsg tg 300 channel 56
+cable dsg tunnel 100 mac-addr efc1.fd00.00f9 tg 100 clients 100
+cable dsg tunnel 200 mac-addr efc1.fd00.007b tg 200 clients 200
+cable dsg tunnel 300 mac-addr efc1.fd00.003f tg 300 clients 300
+cable dsg cfr 100 dest-ip {{ tunel_100_Dest_IP }} tunnel 100 priority 1 src-ip {{ tunel_100_Src_IP }} in-dcd yes
+cable dsg cfr 200 dest-ip {{ tunel_200_Dest_IP }} tunnel 200 priority 1 src-ip {{ tunel_200_Src_IP }} in-dcd yes
+cable dsg cfr 300 dest-ip {{ tunel_300_Dest_IP }} tunnel 300 priority 1 src-ip {{ tunel_300_Src_IP }} in-dcd yes
+cable dsg timer 1 Tdsg1 2 Tdsg2 30 Tdsg3 1 Tdsg4 35
+{% endif %}

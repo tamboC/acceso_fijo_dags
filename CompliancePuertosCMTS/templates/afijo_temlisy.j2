@@ -1,0 +1,11 @@
+{% set temp = cmts_info_lisy.results | unique %}
+{% for item in temp %}
+{% if item.item.up_slot != None %}
+CMTS = {{ inventory_hostname }}
+mac_domain = {{ item.item.mac_domain }}
+up_slot = {{ item.item.up_slot }}
+up_conn = {{ item.item.up_conn }}
+dw_slot = {{ item.item.dw_slot }}
+dw_conn = {{ item.item.dw_conn }}
+{% endif %}
+{% endfor %}

@@ -1,0 +1,82 @@
+---
+- name: Puertos E6K
+  connection: network_cli
+  gather_facts: false
+  hosts: CMTS_ARRIS
+  debugger: never
+  vars:
+    cdir: "{{PathTo.stdout}}/"
+    COMBINACION: "{{ lookup('file', '/usr/local/airflow/dags/cel_afijo/CompliancePuertosCMTS/output/mongo/E6Kagrego_{{nombre}}_source.json') | from_json }}"
+    COMBINACIONDWNuevo: "{{ lookup('file', '/usr/local/airflow/dags/cel_afijo/CompliancePuertosCMTS/output/mongo/finaldw_{{nombre}}.json') | from_json }}"
+    COMBINACIONMAC:  "{{ lookup('file', '/usr/local/airflow/dags/cel_afijo/CompliancePuertosCMTS/output/mongo/mac_{{nombre}}.json') | from_json }}"
+    #COMBINACIONlisy: "{{ lookup('file', '/usr/local/airflow/dags/cel_afijo/CompliancePuertosCMTS/output/mongo/E6Kfinalisy_{{nombre}}_source.json') | from_json }}"
+  tasks:
+
+    - name: -- JSON QUERY --
+      debug:
+        var: item
+      loop: "{{ COMBINACION | to_json | from_json | json_query(query_filter) }}"
+      vars:
+        query_filter: "[].{CMTS: CMTS, mac_domain: mac_domain, up_slot: up_slot, up_conn: up_conn, dw_conn: dw_conn, dw_slot: dw_slot, up_power: up_power, frequency: frequency, BW: BW, interface: interface, profile: profile}"
+      no_log: false
+      register: cmts_info
+      delegate_to: localhost
+
+    # - name: -- JSON QUERY lisy --
+    #   debug:
+    #     var: item
+    #   loop: "{{ COMBINACIONlisy | to_json | from_json | json_query(query_filter) }}"
+    #   vars:
+    #     query_filter: "[].{CMTS: cmts, mac_domain: mac_domain, up_slot: up_slot, up_conn: up_conn, dw_conn: dw_conn, dw_slot: dw_slot}"
+    #   no_log: false
+    #   register: cmts_info_lisy
+    #   delegate_to: localhost
+
+
+    - name: --JSON QUERY FREQ DW --
+      debug:
+        var: item
+      loop: "{{ COMBINACIONDWNuevo | to_json | from_json | json_query(query_filter) }}"
+      vars:
+        query_filter: "[].{interface: interface, freq_cen: freq_cen, mac: mac, high_freq: high_freq}"
+      no_log: false
+      register: cmts_infoDW
+      delegate_to: localhost
+
+    - name: --JSON QUERY MAC --
+      debug:
+        var: item
+      loop: "{{ COMBINACIONMAC | to_json | from_json | json_query(query_filter) }}"
+      vars:
+        query_filter: "[].{mac: mac}"
+      no_log: false
+      register: cmts_infoMAC
+      delegate_to: localhost
+
+
+      
+    - name: -- BUILD TARGET FILE CMTS --
+      copy:
+        content: "{{ lookup('template', '../templates/afijo_temE6K.j2') }}"
+        dest: "/usr/local/airflow/dags/cel_afijo/CompliancePuertosCMTS/output/E6K_{{nombre}}.txt"
+      delegate_to: localhost
+
+    # - name: -- BUILD TARGET FILE LISY--
+    #   copy:
+    #     content: "{{ lookup('template', '../templates/afijo_temlisy.j2') }}"
+    #     dest: "/usr/local/airflow/dags/cel_afijo/CompliancePuertosCMTS/output/lisy_{{nombre}}.txt"
+    #   delegate_to: localhost      
+
+    # - name: Compara diferencias en archivo
+    #   shell: diff /usr/local/airflow/dags/cel_afijo/CompliancePuertosCMTS/output/E6K_{{nombre}}.txt /usr/local/airflow/dags/cel_afijo/CompliancePuertosCMTS/output/lisy_{{nombre}}.txt | egrep ">|<" | cat
+    #   register: DiffFile
+    #   delegate_to: localhost
+    #   ignore_errors: yes
+    #   run_once: true
+
+    # - debug: 
+    #     var: DiffFile.stdout_lines
+
+    # - name: Escribo Solo si hay diferencias
+    #   shell: echo "{{DiffFile.stdout}}" > /usr/local/airflow/dags/cel_afijo/CompliancePuertosCMTS/output/diff_{{nombre}}.dif
+    #   delegate_to: localhost

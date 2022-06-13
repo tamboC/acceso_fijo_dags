@@ -1,0 +1,40 @@
+---
+- name: Playbook Backup OLTs
+  hosts: olt_HW
+  connection: telnet
+  debugger: never
+  gather_facts: no
+
+  tasks:
+
+    - name: Creo el directorio para guardar el backup
+      file:
+        path: /io/cel_core/backup/OLT/{{nombre}}/configs/
+        state: directory
+      delegate_to: localhost
+
+    - name: -- Commands--
+      dslam_huawei_command:
+        prompt: "{{ nombre }}.*(>|#)"  
+        enable: true
+        command:
+          - undo smart
+          - display current-configuration
+      register: command_output_HW
+      until: command_output_HW is succeeded
+      retries: 2
+      delay: 30
+      ignore_errors: yes
+
+    - name: Debug
+      debug:
+        msg: "{{command_output_HW}}"
+      when: command_output_HW is defined
+      delegate_to: localhost
+
+    - name: Copio salida de HW
+      copy:
+        content: "{{ command_output_HW.command[1]['display current-configuration'] }}"
+        dest: /io/cel_core/backup/OLT/{{nombre}}/configs/HW_{{nombre}}_{{now().strftime("%d-%m-%y_%H-%M")}}.bkp
+      when: command_output_HW is defined
+      delegate_to: localhost

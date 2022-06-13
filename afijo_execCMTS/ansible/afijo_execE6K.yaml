@@ -1,0 +1,37 @@
+---
+- hosts: NE
+  gather_facts: false
+  connection: network_cli
+  debugger: never
+  vars:
+    commandPre: "{{ 'pre' }}"
+    commandPost: "{{ 'post' }}"
+    commandConfig: "{{ 'conf' }}"
+
+  tasks:
+
+  - block:      
+
+##### (PRE|CONFIG|POST) Commands #####
+    - name: PRE - Run command in selected CMTSs
+      ios_command:
+        commands: "{{ pre }}"
+      register: commandPreOutput
+
+    - name: CONFIG - Config command in selected CMTSs
+      ios_command:
+        commands: "{{ conf }}"
+      register: commandConfigOutput
+
+
+    - name: POST - Run command in selected CMTSs
+      ios_command:
+        commands: "{{ post }}"
+      register: commandPostOutput
+
+    - name: Mostrar Resultado 
+      debug:
+        msg:
+          - "{{commandPreOutput.stdout}}"
+          - "{{commandConfigOutput.stdout}}"
+          - "{{commandPostOutput.stdout}}"

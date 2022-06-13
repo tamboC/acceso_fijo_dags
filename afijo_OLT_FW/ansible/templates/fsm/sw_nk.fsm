@@ -1,0 +1,5 @@
+Value sw (\w+.\w+.\w+)
+
+
+Start
+  ^\s+isam-release\s+:\s+${sw} -> Record

@@ -1,0 +1,116 @@
+{% for connector in range (0, 16) %}
+{% for element in port_parameters.ports %}
+{% if element.linecard == item and element.up_port == connector %}
+controller upstream-cable {{ element.upstream_controller }}
+ us-channel 0 power-level {{ element.up_power_level }}
+ us-channel 1 power-level {{ element.up_power_level }}
+ us-channel 2 power-level {{ element.up_power_level }}
+ us-channel 3 power-level {{ element.up_power_level }}
+ us-channel 4 power-level {{ element.up_power_level }}
+ us-channel 5 power-level {{ element.up_power_level }}
+ us-channel 12 power-level {{ element.up_power_level }}
+ us-channel 13 power-level {{ element.up_power_level }}
+{% if element.up_ch_map == "LS-20SC-10OF-64" %}
+ no us-channel 0 shutdown
+ no us-channel 1 shutdown
+ us-channel 2 shutdown
+ us-channel 3 shutdown
+ us-channel 4 shutdown
+ us-channel 5 shutdown
+ no us-channel 12 shutdown
+ us-channel 13 shutdown
+{% endif %}
+{% if element.up_ch_map == "LS-40SC-00OF-16" %}
+ no us-channel 0 shutdown
+ no us-channel 1 shutdown
+ no us-channel 2 shutdown
+ no us-channel 3 shutdown
+ us-channel 4 shutdown
+ us-channel 5 shutdown
+ us-channel 12 shutdown
+ us-channel 13 shutdown
+{% endif %}
+{% if element.up_ch_map == "LS-30SC-00OF-64" %}
+ no us-channel 0 shutdown
+ no us-channel 1 shutdown
+ no us-channel 2 shutdown
+ us-channel 3 shutdown
+ us-channel 4 shutdown
+ us-channel 5 shutdown
+ us-channel 12 shutdown
+ us-channel 13 shutdown
+{% endif %}
+{% if element.up_ch_map == "LS-20SC-00OF-64" %}
+ no us-channel 0 shutdown
+ no us-channel 1 shutdown
+ us-channel 2 shutdown
+ us-channel 3 shutdown
+ us-channel 4 shutdown
+ us-channel 5 shutdown
+ us-channel 12 shutdown
+ us-channel 13 shutdown
+{% endif %}
+{% if element.up_ch_map == "MS-22SC-00OF-64" %}
+ no us-channel 0 shutdown
+ no us-channel 1 shutdown
+ us-channel 2 shutdown
+ us-channel 3 shutdown
+ no us-channel 4 shutdown
+ no us-channel 5 shutdown
+ us-channel 12 shutdown
+ us-channel 13 shutdown
+{% endif %}
+{% if element.up_ch_map == "MS-22SC-01OF-64" %}
+ no us-channel 0 shutdown
+ no us-channel 1 shutdown
+ us-channel 2 shutdown
+ us-channel 3 shutdown
+ no us-channel 4 shutdown
+ no us-channel 5 shutdown
+ us-channel 12 shutdown
+ no us-channel 13 shutdown
+{% endif %}
+{% if element.up_ch_map == "MS-31SC-00OF-64" %}
+ no us-channel 0 shutdown
+ no us-channel 1 shutdown
+ no us-channel 2 shutdown
+ us-channel 3 shutdown
+ us-channel 4 shutdown
+ no us-channel 5 shutdown
+ us-channel 12 shutdown
+ us-channel 13 shutdown
+{% endif %}
+{% if element.up_ch_map == "MS-31SC-01OF-64" %}
+ no us-channel 0 shutdown
+ no us-channel 1 shutdown
+ no us-channel 2 shutdown
+ us-channel 3 shutdown
+ us-channel 4 shutdown
+ no us-channel 5 shutdown
+ us-channel 12 shutdown
+ no us-channel 13 shutdown
+{% endif %}
+exit
+!
+{% endif %}
+{% endfor %}
+{% endfor %}
+!
+{% for connector in range (0, 16) %}
+{% set upstream =  item | string() + "/0/" + connector | string() %}
+{% for up_controller in port_parameters.ports_shutdown %}
+{% if up_controller == upstream %}
+controller upstream-cable {{ upstream }}
+ us-channel 0 shutdown
+ us-channel 1 shutdown
+ us-channel 2 shutdown
+ us-channel 3 shutdown
+ us-channel 4 shutdown
+ us-channel 5 shutdown
+ us-channel 12 shutdown
+ us-channel 13 shutdown
+!
+{% endif %}
+{% endfor%}
+{% endfor%}
+!

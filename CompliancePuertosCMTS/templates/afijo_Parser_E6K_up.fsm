@@ -1,0 +1,17 @@
+Value interface (\d+\/\d+\/\d+)
+Value up_slot (\d+)
+Value up_conn (\d+)
+Value dw_slot (\d+\/\d+\/\d+)
+Value mac_domain (\d+)
+Value up_power (\d+)
+Value frequency (\d+)
+Value BW (\d+)
+
+Start
+  ^interface cable-upstream\s+${interface}
+  ^\s+cable cable\-mac ${mac_domain}
+  ^\s+cable supervision ${dw_slot}
+  ^\s+cable power-level ${up_power}
+  ^\s+cable frequency\s+${frequency} 
+  ^\s+cable channel-width\s+${BW}
+  ^\s+cable connector ${up_conn} -> Record

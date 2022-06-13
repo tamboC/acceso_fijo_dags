@@ -1,0 +1,30 @@
+---
+- name: Backup CMTS
+  connection: network_cli
+  gather_facts: false
+  hosts: CMTS_ARRIS
+
+  tasks:
+    - name: Backup E6K
+      ios_command:
+        commands: 
+          -  terminal length 0
+          -  show running-config
+      register: command_output_arris
+      when: "'CMTS_ARRIS' in group_names" 
+      ignore_errors: true
+
+    #- debug:
+    #    msg: "{{ command_output_arris.stdout }}"
+
+    - name: Creo el directorio para guardar el backup
+      file:
+        path: /usr/local/backup/CMTS/{{nombre}}/configs/
+        state: directory
+      delegate_to: localhost
+
+    - name: Copio salida de E6K
+      copy:
+        content: "{{ command_output_arris.stdout[1] }}"
+        dest: /usr/local/backup/CMTS/{{nombre}}/configs/ARRIS_{{nombre}}_{{now().strftime("%d-%m-%y_%H-%M")}}.bkp
+      delegate_to: localhost

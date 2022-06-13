@@ -1,0 +1,16 @@
+Value interface (\d+\/\d+\/\d+)
+Value up_slot (\d+)
+Value up_conn (\d+)
+Value dw_slot (\d+\/\d+\/\d+)
+Value mac_domain (\d+)
+Value up_power (\d+)
+Value low_frequency (\d+)
+Value high_frequency (\d+)
+
+Start
+  ^interface cable-upstream\s+${interface}
+  ^\s+ofdm cable\-mac ${mac_domain}
+  ^\s+ofdm frequency low-act-edge ${low_frequency} high-act-edge ${high_frequency}
+  ^\s+ofdm target-power ${up_power}
+  ^\s+ofdm supervision ${dw_slot}
+  ^\s+ofdm connector ${up_conn} -> Record

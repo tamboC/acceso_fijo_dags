@@ -1,0 +1,41 @@
+[CMTS:children] 
+CMTS_ARRIS 
+CMTS_CISCO 
+CMTS_CASA
+
+[CMTS_ARRIS]
+10.100.150.98 nombre=CMT6.DEV1-E6K
+
+[CMTS_ARRIS:vars]
+ansible_network_os=ios
+
+[CMTS_CISCO]
+10.100.150.8 nombre=CMT5.ALM1-CBR8
+
+[CMTS_CISCO:vars]
+ansible_network_os=ios
+
+[CMTS_CASA]
+10.100.153.30 nombre=CMT1.JMA1-C100G
+
+[CMTS_CASA:vars]
+ansible_network_os=ios
+
+[CMTS:vars]
+ansible_network_os=ios
+
+[OLT:children]
+OLT_HUAWEI
+OLT_NOKIA
+
+[OLT_HUAWEI]
+172.21.101.74 nombre=BUAP01
+
+[OLT_HUAWEI:vars]
+ansible_network_os=ios
+
+[OLT_NOKIA]
+172.21.101.74 nombre=ALGP01
+
+[OLT_NOKIA:vars]
+ansible_network_os = sros

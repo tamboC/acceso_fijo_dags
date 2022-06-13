@@ -1,0 +1,9 @@
+{% for item in cmts_info_lisy.results|sort(attribute='item.mac_domain') %}
+CMTS = {{ inventory_hostname }}
+mac_domain = {{ item.item.mac_domain }}
+up_slot = {{ item.item.up_slot }}
+up_conn = {{ item.item.up_conn }}
+dw_slot = {{ item.item.dw_slot }}
+dw_conn = {{ item.item.dw_conn }}
+power-level = {{ item.item.up_power }}
+{% endfor %}

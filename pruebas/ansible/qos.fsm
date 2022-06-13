@@ -1,0 +1,4 @@
+Value key_p (HSI.\w+.\w+|HSI\w+)
+
+Start
+  ^\s*ingress-qos\s*${key_p} -> Next.Record

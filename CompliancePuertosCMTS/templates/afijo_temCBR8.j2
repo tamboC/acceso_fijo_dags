@@ -1,0 +1,10 @@
+{% set temp = cmts_info.results|sort(attribute='item.mac_domain') %}
+{% for item in temp %}
+CMTS = {{ item.item.CMTS }}
+mac_domain = {{ item.item.mac_domain }}
+up_slot = {{ item.item.up_slot }}
+up_conn = {{ item.item.up_conn }}
+dw_slot = {{ item.item.dw_slot }}
+dw_conn = {{ item.item.dw_conn }}
+power-level = {{ item.item.up_power }} dbm
+{% endfor %}

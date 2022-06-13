@@ -1,0 +1,14 @@
+redundancy
+ mode sso
+ linecard-group 0 internal-switch
+  class 1:N
+{% for l in linecards %}
+  member slot {{ l }} primary
+{% endfor %}
+  member slot 0 secondary
+  no revertive
+  main-cpu
+  standby console enable
+  exit
+ exit
+!

@@ -1,0 +1,9 @@
+Value Filldown mac_domain (\d+)
+Value upstream (\d+\/\d+.\d+\/\d+)
+Value downstream (\d+\/\d+\/\d+)
+Value mod (\w+)
+
+Start
+  ^interface\s+docsis-mac\s+${mac_domain}
+  ^\s+upstream\s+\d+\s+interface\s+upstream\s+${upstream} -> Record
+  ^\s+downstream\s+\d+\s+interface\s${mod}\s+${downstream} -> Record

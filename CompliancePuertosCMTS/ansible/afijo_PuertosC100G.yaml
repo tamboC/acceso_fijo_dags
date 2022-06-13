@@ -1,0 +1,44 @@
+---
+- name: Puertos C100G
+  connection: network_cli
+  gather_facts: false
+  hosts: CMTS_CASA
+
+  tasks:
+    - name: -- LOAD DEVICE CURRENT CONFIG FILTER CABLE UP --
+      shell: "cat `ls -rt /io/cel_core/backup/CMTS/{{nombre}}/configs/*.bkp | tail -1`"
+      register: current_config_CUP
+      delegate_to: localhost
+
+    - name: Parseo la salida del comando
+      set_fact:
+        parser: "{{current_config_CUP.stdout | parse_cli_textfsm('/usr/local/airflow/dags/cel_afijo/CompliancePuertosCMTS/templates/afijo_ParserC100G.j2')}}"
+      delegate_to: localhost
+
+    - name: Parseo UP
+      set_fact:
+        parse_up: "{{current_config_CUP.stdout | parse_cli_textfsm('/usr/local/airflow/dags/cel_afijo/CompliancePuertosCMTS/templates/afijo_ParserC100GUp.j2')}}"
+      delegate_to: localhost
+
+    - debug: 
+        var: current_config_CUP.stdout
+
+    - name: Se genera json
+      copy:
+       content: "{{ parser }}"
+       dest: "/usr/local/airflow/dags/cel_afijo/CompliancePuertosCMTS/output/C100G_{{nombre}}_source.json"
+       mode: '0777'
+      delegate_to: localhost
+
+    - name: Se genera json UP
+      copy:
+       content: "{{ parse_up }}"
+       dest: "/usr/local/airflow/dags/cel_afijo/CompliancePuertosCMTS/output/C100G_{{nombre}}_UP_source.json"
+       mode: '0777'
+      delegate_to: localhost
+
+    - name: Run python to transform and load data
+      script: /usr/local/tambo/cels/cel_afijo/airflow/dags/CompliancePuertosCMTS/ansible/importC100G.py '{{nombre}}'
+      args:
+         executable: python
+      delegate_to: localhost

@@ -1,0 +1,43 @@
+controller Upstream-Cable {{ upStream }}
+ us-channel 0 frequency 38600000
+ us-channel 0 channel-width 6400000 6400000
+ us-channel 0 power-level {{ RxPort }}
+ us-channel 0 docsis-mode atdma
+ us-channel 0 minislot-size 2
+ us-channel 0 modulation-profile 225
+ us-channel 0 equalization-coefficient
+ no us-channel 0 shutdown
+ us-channel 1 frequency 32200000
+ us-channel 1 channel-width 6400000 6400000
+ us-channel 1 power-level {{ RxPort }}
+ us-channel 1 docsis-mode atdma
+ us-channel 1 minislot-size 2
+ us-channel 1 modulation-profile 225
+ us-channel 1 equalization-coefficient
+ no us-channel 1 shutdown
+ us-channel 2 frequency 25800000
+ us-channel 2 channel-width 6400000 6400000
+ us-channel 2 power-level {{ RxPort }}
+ us-channel 2 docsis-mode atdma
+ us-channel 2 minislot-size 2
+ us-channel 2 modulation-profile 225
+ us-channel 2 equalization-coefficient
+ no us-channel 2 shutdown
+ us-channel 3 frequency 81800000
+ us-channel 3 channel-width 6400000 6400000
+ us-channel 3 power-level {{ RxPort }}
+ us-channel 3 docsis-mode atdma
+ us-channel 3 minislot-size 2
+ us-channel 3 modulation-profile 222
+ us-channel 3 equalization-coefficient
+ us-channel 3 shutdown
+ us-channel 4 channel-width 1600000 1600000
+ us-channel 4 docsis-mode atdma
+ us-channel 4 minislot-size 4
+ us-channel 4 modulation-profile 221
+ us-channel 4 shutdown
+ us-channel 5 channel-width 1600000 1600000
+ us-channel 5 docsis-mode atdma
+ us-channel 5 minislot-size 4
+ us-channel 5 modulation-profile 221
+ us-channel 5 shutdown

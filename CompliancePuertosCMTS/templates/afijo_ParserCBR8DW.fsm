@@ -1,0 +1,12 @@
+Value Filldown interface (\d+\/\d+\/\d+)
+Value rf_channel (\d+\s+\d+|\d+)
+Value Required frequency (\d+)
+Value type (\w+)
+Value bw (\d+)
+
+Start
+  ^controller\s+Integrated-Cable\s+${interface}
+  ^\s+rf-chan\s+${rf_channel}
+  ^\s+shutdown\s+ -> Continue.Clearall
+  ^\s+type\s+${type}
+  ^\s+(ofdm\s+channel-profile\s+64\s+start-frequency|frequency)\s+${frequency}(\s+width\s+${bw}.*)? -> Record

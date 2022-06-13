@@ -1,0 +1,49 @@
+---
+- name: Puertos CBR8
+  connection: network_cli
+  gather_facts: false
+  hosts: CMTS_CISCO
+
+  tasks:
+#    - name: -- LOAD DEVICE CURRENT CONFIG FILTER CABLE UP --
+#      shell: "cat `ls -rt /io/cel_core/backup/CMTS/{{nombre}}/configs/*.bkp | tail -1` | sed -n '/^interface cable-upstream/,/exit/p'"
+#      register: current_config_CUP
+#      delegate_to: localhost
+
+#    - name: Parseo la salida del comando
+#      set_fact:
+#        parser: "{{current_config_CUP.stdout | parse_cli_textfsm('/usr/local/airflow/dags/cel_afijo/CompliancePuertosCMTS/templates/afijo_ParserE6K.j2')}}"
+#      delegate_to: localhost
+
+#    - debug: 
+#        var: current_config_CUP.stdout
+
+    #- name: -- BUILD SOURCE FILE --
+    #  copy:
+    #   content: "{{ lookup('template', '../templates/E6K_source.j2') }}"
+    #   dest: "tmp/E6K_{{inventory_hostname}}_source.txt"
+
+#    - name: Se genera json
+#      copy:
+#       content: "{{ parser }}"
+#       dest: "/usr/local/airflow/dags/cel_afijo/CompliancePuertosCMTS/output/E6K_{{nombre}}_source.json"
+#       mode: '0777'
+#      delegate_to: localhost
+
+    - name: Run python 
+      script: /usr/local/tambo/cels/cel_afijo/airflow/dags/CompliancePuertosCMTS/ansible/parser_cbr8.py '{{nombre}}'
+      args:
+         executable: python3
+      delegate_to: localhost
+
+    - name: Run python agrego el cmts y separo para esribir en mongo
+      script: /usr/local/tambo/cels/cel_afijo/airflow/dags/CompliancePuertosCMTS/ansible/agrego.py '{{nombre}}'
+      args:
+         executable: python
+      delegate_to: localhost
+
+    - name: Run python genero un json solo con dw y up para comparar
+      script: /usr/local/tambo/cels/cel_afijo/airflow/dags/CompliancePuertosCMTS/ansible/unifico.py '{{nombre}}'
+      args:
+         executable: python
+      delegate_to: localhost

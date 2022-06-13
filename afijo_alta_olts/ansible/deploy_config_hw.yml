@@ -1,0 +1,487 @@
+---
+- hosts: NE
+  gather_facts: false
+  connection: telnet
+  debugger: never
+  vars:  
+    commands_circuit: |
+            [
+            "config",
+            "alarm output all",
+            "event output all",
+            "raio-format pitp-pmode rid xpon splabel",
+            "raio-format dhcp-option82 cid xpon anid xpon frame/slot/subslot/port:vlanid.ontid.sn",
+            "raio-format dhcp-option82 rid xpon anid",
+            "raio-format dhcpv6-option rid xpon splabel",
+            "raio-format pitp-pmode cid xpon anid xpon frame/slot/subslot/port:vlanid.ontid.sn",
+            "raio-mode user-defined pitp-pmode",
+            "pitp enable pmode",
+            "raio-mode user-defined dhcp-option82"]
+     
+    commands_dhcp: |
+            [
+            "config",
+            {"dhcp option82 enable": [{'.': 'y'}]}, 
+            {"dhcp mode layer-2": [{'.': 'y'}]}]
+   
+    commands_net: | 
+            [   
+            "config",     
+            {"vlan 6 to 7 smart": [{'.*' : 'y'}]},
+            {"vlan 29 to 30 smart": [{'.' : 'y'}]}, 
+            {"port vlan 29 to 30 {{puerto1Olt}} 0": [{'.': 'y'}]},
+            "quit"]
+        
+    commands_vlan_29: |
+            [
+            "config",        
+            "interface Vlanif29",
+            {"ip address {{ipToipOlt}} {{maskToipBin}}": [{'.': ''}]},
+            "quit"
+            ]
+   
+    commands_btv : |
+            [ 
+            "config",
+            "multicast-vlan 6"
+             ]
+
+    #SNMP ACTUAL R20        
+    commands_snmp : |
+            [
+            "config",
+            {"snmp-agent community read public.Teco2021": [{'.': ''}]},
+            {"snmp-agent community write private.Teco2021": [{'.': ''}]},
+            "snmp-agent sys-info version v1 v2c v3",
+            "snmp-agent sys-info contact TECO-49683000",
+            "snmp-agent sys-info contact integraciondered@ta.telecom.com.ar",
+            "snmp-agent sys-info location Argentina",
+            "snmp-agent trap enable standard",
+            "snmp-agent target-host trap-hostname NCE_HOR address 172.18.4.29 udp-port 162 trap-paramsname Telecom",
+            "snmp-agent target-host trap-hostname NCE_SLO address 172.18.4.50 udp-port 162 trap-paramsname Telecom",
+            {"snmp-agent target-host trap-paramsname Telecom v1 securityname private.Teco2021": [{'.': ''}]}]
+    
+    commands_loghost : |
+            [
+            "config",  
+            "syslog enable alarm-event",
+            {"loghost add 172.18.4.29 NCE_HOR": [{'.': ''}]},
+            "loghost activate ip 172.18.4.29",
+            {"loghost add 172.18.4.50 NCE_SLO": [{'.': ''}]},
+            "loghost activate ip 172.18.4.50",
+            {"loghost add 190.227.215.10 Servidor_Scannet2": [{'.': ''}]},
+            "loghost activate ip 190.227.215.10",
+            {"loghost add 190.227.215.18 Servidor_Scannet1": [{'.': ''}]},
+            "loghost activate ip 190.227.215.18"]
+    
+    commands_ACL_4020 : |
+                  [   
+                  "config",    
+                  "acl 4020",
+                  "description OPEN v2",
+                  {"rule 10 permit cos 1 source 30": [{'.': ''}]}, 
+                  {"rule 15 permit cos 2 source 30": [{'.': ''}]},
+                  {"rule 20 permit cos 3 source 30": [{'.': ''}]}
+                  ]
+                  
+    commands_ACL_4021 : |
+                  [   
+                  "config",    
+                  "acl 4021",
+                  "description OPEN v2",
+                  {"rule 10 permit cos 4 source 30": [{'.': ''}]}, 
+                  {"rule 15 permit cos 5 source 30": [{'.': ''}]},
+                  {"rule 20 permit cos 6 source 30": [{'.': ''}]},
+                  {"rule 25 permit cos 7 source 30": [{'.': ''}]}
+                  ]  
+    
+
+    commands_ACL_2 : |
+            [   
+            "config", 
+            "traffic-priority inbound link-group 4020 cos 0 port {{puerto1Olt}}/0"]
+            
+    commands_ACL_3 : |
+            [   
+            "config", 
+            "traffic-priority inbound link-group 4020 cos 0 port {{puerto2Olt}}/0"]
+    commands_ACL_4 : |
+            [   
+            "config", 
+            "traffic-priority inbound link-group 4021 cos 2 port {{puerto1Olt}}/0"]
+            
+    commands_ACL_5 : |
+            [   
+            "config", 
+            "traffic-priority inbound link-group 4021 cos 2 port {{puerto2Olt}}/0"]
+    
+    users : |
+            [
+            {"terminal user name" : [{".*" : "oymtelecom"},
+                                     {".*" : "telecom1"},
+                                     {".*" : "telecom1"},
+                                     {".*" : ""},
+                                     {".*" : "2"},
+                                     {".*" : "20"},
+                                     {".*" : ""},
+                                     {".*" : "y"},
+                                     {".*" : "INGBAM"},
+                                     {".*" : "ingbam1"},
+                                     {".*" : "ingbam1"},
+                                     {".*" : ""},
+                                     {".*" : "1"},
+                                     {".*" : "20"},
+                                     {".*" : ""},
+                                     {".*" : "y"},
+                                     {".*" : "automation_user"},
+                                     {".*" : "matdaem0n"},
+                                     {".*" : "matdaem0n"},
+                                     {".*" : ""},
+                                     {".*" : "2"},
+                                     {".*" : "20"},
+                                     {".*" : ""},
+                                     {".*" : "n"}
+                                     ]},
+            {"terminal user password" : [{".*" : "root"},
+                                         {".*" : "admin123"},
+                                         {".*" : "Anacrusa7900#"},
+                                         {".*" : "Anacrusa7900#"},
+                                         {".*" : "n"}  
+                                      ]}]
+
+    tacacs : |
+            [   
+            "undo smart", 
+            "config", 
+            "aaa",
+            "authentication-scheme tacacs-group",
+            "authentication-mode hwtacacs",
+            "quit",
+            "authorization-scheme tacacs-group",
+            "authorization-mode hwtacacs",
+            "quit",
+            "accounting-scheme tacacs-group",
+            "accounting-mode hwtacacs",
+            "quit",
+            "quit",
+            "hwtacacs-server template hwtest",
+            "hwtacacs-server shared-key argentina2001",
+            "hwtacacs-server authentication 200.43.9.251",
+            "hwtacacs-server authentication 200.43.9.15 secondary",
+            "hwtacacs-server authorization 200.43.9.251",
+            "hwtacacs-server authorization 200.43.9.15 secondary",
+            "hwtacacs-server accounting 200.43.9.251",
+            "hwtacacs-server accounting 200.43.9.15 secondary",
+            "quit",
+            "aaa",
+            "domain teco",
+            "authentication-scheme tacacs-group",
+            "authorization-scheme tacacs-group",
+            "accounting-scheme tacacs-group",
+            "hwtacacs-server hwtest",
+            "quit",
+            "quit"]
+                                      
+                                      
+
+  tasks:
+    
+    - name: -- Display trap filter --
+      dslam_huawei_command:
+        prompt: "[A-Z|0-9]{3}[0-9]{2}.*(>|#)"
+        cmdtimeout: 60
+        enable: true
+        command: 
+            - undo smart
+            - display trap filter
+      retries: 3
+      delay: 3
+      register: config_alarma
+      until: config_alarma.rc == 0
+      # ignore_errors : true
+
+    - name: -- Armo inventario traps --
+      set_fact:
+        inventory_traps: "{{ config_alarma.command[1]['display trap filter'] | parse_cli_textfsm('./fsm/hw/alarmas.fsm')}}"
+      delegate_to: localhost
+      retries: 3
+      delay: 3
+      # ignore_errors : true
+
+    - name: -- Confirm Alarma --
+      dslam_huawei_command:
+        prompt: "[A-Z|0-9]{3}[0-9]{2}.*(>|#)"
+        cmdtimeout: 60
+        enable: true
+        command:
+          - undo smart 
+          - config
+          - undo trap filter {{item.evento}} condition id {{item.id}}
+          - quit
+      loop: "{{ inventory_traps }}"
+      retries: 3
+      delay: 3
+      register: config_auto_find
+      until: config_auto_find.rc == 0
+      # ignore_errors : true
+
+
+    - name: -- Config DATA - commands_circuit --
+      dslam_huawei_command:
+        prompt: "[A-Z|0-9]{3}[0-9]{2}.*(>|#)"
+        cmdtimeout: 60
+        enable: true
+        command: "{{commands_circuit}}"
+      retries: 3
+      delay: 3
+      register: config_circuit
+      until: config_circuit.rc == 0
+      # ignore_errors : true
+
+    - name: -- Config DATA - commands_dhcp --
+      dslam_huawei_command:
+        prompt: "[A-Z|0-9]{3}[0-9]{2}.*(>|#)"
+        cmdtimeout: 60
+        enable: true
+        command: "{{commands_dhcp}}"
+      retries: 3
+      delay: 3
+      register: config_dhcp
+      until: config_dhcp.rc == 0
+      # ignore_errors : true
+
+    - name: -- Config DATA - commands_net --
+      dslam_huawei_command:
+        prompt: "[A-Z|0-9]{3}[0-9]{2}.*(>|#)"
+        cmdtimeout: 60
+        enable: true
+        command: "{{commands_net}}"
+      retries: 3
+      delay: 3
+      register: config_net
+      until: config_net.rc == 0
+      # ignore_errors : true
+
+      
+    - name: -- Config DATA - commands_vlan_29 --
+      dslam_huawei_command:
+        prompt: "[A-Z|0-9]{3}[0-9]{2}.*(>|#)"
+        # cmdtimeout: 60
+        enable: true
+        command: "{{commands_vlan_29}}"
+      retries: 3
+      delay: 3
+      register: config_vlan_29
+      until: config_vlan_29.rc == 0
+      # ignore_errors : true
+    
+    - name: -- Config DATA - commands_btv --
+      dslam_huawei_command:
+        prompt: "[A-Z|0-9]{3}[0-9]{2}.*(>|#)"
+        cmdtimeout: 60
+        enable: true
+        command: "{{commands_btv}}"
+      retries: 3
+      delay: 3
+      register: config_btv
+      until: config_btv.rc == 0
+      # ignore_errors : true
+
+    - name: -- Config DATA - commands_snmp --
+      dslam_huawei_command:
+        prompt: "[A-Z|0-9]{3}[0-9]{2}.*(>|#)"
+        cmdtimeout: 60
+        enable: true
+        command: "{{commands_snmp}}"
+      register: config_snmp
+      retries: 3
+      delay: 3
+      until: config_snmp.rc == 0
+      # ignore_errors : true
+
+    - name: -- Config DATA - commands_loghost --
+      dslam_huawei_command:
+        prompt: "[A-Z|0-9]{3}[0-9]{2}.*(>|#)"
+        cmdtimeout: 60
+        enable: true
+        command: "{{commands_loghost}}"
+      register: config_loghost
+      retries: 3
+      delay: 3
+      until: config_loghost.rc == 0
+      # ignore_errors : true
+
+    - name: -- Config DATA - commands_ACL_4020 --
+      dslam_huawei_command:
+        prompt: "[A-Z|0-9]{3}[0-9]{2}.*(>|#)"
+        # cmdtimeout: 60
+        enable: true
+        command: "{{commands_ACL_4020}}"
+      register: config_ACL_4020
+      retries: 3
+      delay: 3
+      until: config_ACL_4020.rc == 0
+      # ignore_errors : true
+      
+    - name: -- Config DATA - commands_ACL_4021 --
+      dslam_huawei_command:
+        prompt: "[A-Z|0-9]{3}[0-9]{2}.*(>|#)"
+        cmdtimeout: 60
+        enable: true
+        command: "{{commands_ACL_4021}}"
+      register: config_ACL_4021
+      retries: 3
+      delay: 3
+      until: config_ACL_4021.rc == 0
+      # ignore_errors : true
+
+    - name: -- Config DATA - commands_ACL_2 --
+      dslam_huawei_command:
+        prompt: "[A-Z|0-9]{3}[0-9]{2}.*(>|#)"
+        cmdtimeout: 60
+        enable: true
+        command: "{{commands_ACL_2}}"
+      register: config_ACL_2
+      retries: 3
+      delay: 3
+      until: config_ACL_2.rc == 0
+      # ignore_errors : true
+
+    - name: -- Config DATA - commands_ACL_3 --
+      dslam_huawei_command:
+        prompt: "[A-Z|0-9]{3}[0-9]{2}.*(>|#)"
+        cmdtimeout: 60
+        enable: true
+        command: "{{commands_ACL_3}}"
+      register: config_ACL_3
+      retries: 3
+      delay: 3
+      until: config_ACL_3.rc == 0
+      # ignore_errors : true
+      
+    - name: -- Config DATA - commands_ACL_4 --
+      dslam_huawei_command:
+        prompt: "[A-Z|0-9]{3}[0-9]{2}.*(>|#)"
+        cmdtimeout: 60
+        enable: true
+        command: "{{commands_ACL_4}}"
+      register: config_ACL_4
+      retries: 3
+      delay: 3
+      until: config_ACL_4.rc == 0
+      # ignore_errors : true
+
+    - name: -- Config DATA - commands_ACL_5 --
+      dslam_huawei_command:
+        prompt: "[A-Z|0-9]{3}[0-9]{2}.*(>|#)"
+        cmdtimeout: 60
+        enable: true
+        command: "{{commands_ACL_5}}"
+      register: config_ACL_5
+      retries: 3
+      delay: 3
+      until: config_ACL_5.rc == 0
+      # ignore_errors : true
+      
+
+    - name: -- Display Board --
+      dslam_huawei_command:
+        prompt: "[A-Z|0-9]{3}[0-9]{2}.*(>|#)"
+        cmdtimeout: 10
+        enable: true
+        command: 
+          - undo smart
+          - display board 0
+      vars:
+        ansible_command_timeout: 60
+      register: display_board
+      retries: 3
+      delay: 3
+      until: display_board.rc == 0
+      # ignore_errors : true
+
+    - name: -- Armo inventario de placas --
+      set_fact:
+        inventory_board: "{{ display_board.command[1]['display board 0'] | parse_cli_textfsm('./fsm/hw/placas.fsm')}}"
+      delegate_to: localhost
+      retries: 3
+      delay: 3
+      # ignore_errors : true
+        
+    - name: -- Confirm Board --
+      dslam_huawei_command:
+        prompt: "[A-Z|0-9]{3}[0-9]{2}.*(>|#)"
+        cmdtimeout: 60
+        enable: true
+        command:
+          - undo smart 
+          - config
+          - board confirm 0/{{item.board}}
+      register: config_auto_find 
+      when: (item.modelo=="H902FLHF" or item.modelo=="H807GPBH" or item.modelo=="H901GPHF" or item.modelo=="H802GPBD" or item.modelo=="H902GPHF" or item.modelo=="H903GPHF") and item.estado =="Auto_find"
+      loop: "{{ inventory_board }}"
+      retries: 3
+      delay: 3
+      until: config_auto_find.rc == 0
+      # ignore_errors : true
+
+    - name: -- Esperando Configuración de placa en {{ name}} --
+      pause:
+        seconds: 60 
+
+    - name: -- Config AUTO-FIND --
+      dslam_huawei_command:
+        prompt: "[A-Z|0-9]{3}[0-9]{2}.*(>|#)"
+        cmdtimeout: 60
+        enable: true
+        command:
+          - undo smart 
+          - config
+          - interface gpon 0/{{item.board}}
+          - port 0 ont-auto-find enable
+          - port 1 ont-auto-find enable
+          - port 2 ont-auto-find enable
+          - port 3 ont-auto-find enable
+          - port 4 ont-auto-find enable
+          - port 5 ont-auto-find enable
+          - port 6 ont-auto-find enable
+          - port 7 ont-auto-find enable
+          - port 8 ont-auto-find enable
+          - port 9 ont-auto-find enable
+          - port 10 ont-auto-find enable
+          - port 11 ont-auto-find enable
+          - port 12 ont-auto-find enable
+          - port 13 ont-auto-find enable
+          - port 14 ont-auto-find enable
+          - port 15 ont-auto-find enable
+          - quit
+          - quit
+      register: set_enable_autofind
+      when: (item.modelo=="H902FLHF" or item.modelo=="H807GPBH" or item.modelo=="H901GPHF" or item.modelo=="H802GPBD" or item.modelo=="H902GPHF" or item.modelo=="H902FLHF" or item.modelo=="H903GPHF" or item.modelo=="H903FLHF") and item.estado !="Failed"
+      loop: "{{ inventory_board }}"
+      retries: 3
+      delay: 3
+      until: set_enable_autofind.rc == 0
+      # ignore_errors : true
+    
+    # - name: -- Debug config_auto_find --
+    #   debug: 
+    #     msg:  "{{set_enable_autofind}}"
+    #   delegate_to: localhost
+      # ignore_errors : true
+      
+    - name: -- Configuracion tacacs --
+      dslam_huawei_command:
+        prompt: "[A-Z|0-9]{3}[0-9]{2}.*(>|#)"
+        cmdtimeout: 30
+        enable: true
+        command: "{{tacacs}}"
+      register: config_tacacs
+
+    # - name: -- Configuracion USERS --
+    #   dslam_huawei_command:
+    #     prompt: "[A-Z|0-9]{3}[0-9]{2}.*(>|#)"
+    #     cmdtimeout: 30
+    #     enable: true
+    #     command: "{{users}}"
+    #   register: config_user

@@ -1,0 +1,12 @@
+- hosts: OLT_HW
+  connection: network_cli
+
+  tasks:
+    - name: test
+      my_module:
+        commands: 
+          - display version
+      register: result  
+
+    - debug:
+        msg : "{{result}}"

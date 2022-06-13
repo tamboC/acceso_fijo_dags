@@ -1,0 +1,116 @@
+#jinja2: lstrip_blocks: True
+{# ARMADO DEL REPORTE PARA CADA COMANDO #}
+{% set deploy = {"success": true, "fails": [] } %}
+{% set fails = [] %}
+    {% if config_system.failed is defined %}
+        {% if config_system.failed %}
+            {% set _ = deploy.update({"success": false }) %}
+            {% set _ = fails.append(config_system.command) %}
+        {% endif %}
+    {% endif %}
+    
+    {% if config_set_vlan.failed is defined %}
+        {% if config_set_vlan.failed %}
+            {% set _ = deploy.update({"success": false }) %}
+            {% set _ = fails.append(config_set_vlan.command) %}
+        {% endif %}
+    {% endif %}
+    
+    {% if config_profiles.failed is defined %}
+        {% if config_profiles.failed %}
+            {% set _ = deploy.update({"success": false }) %}
+            {% set _ = fails.append(config_profiles.command) %}
+        {% endif %}  
+    {% endif %}  
+    
+    {% if config_vlan_30.failed is defined %}
+        {% if config_vlan_30.failed %}
+            {% set _ = deploy.update({"success": false }) %}
+            {% set _ = fails.append(config_vlan_30.command) %}
+        {% endif %}  
+    {% endif %}  
+    
+    {% if config_vlan_29.failed is defined %}
+        {% if config_vlan_29.failed %}
+            {% set _ = deploy.update({"success": false }) %}
+            {% set _ = fails.append(config_vlan_29.command) %}
+        {% endif %}
+    {% endif %}
+    
+    {% if config_vlan_6.failed is defined %}
+        {% if config_vlan_6.failed %}
+            {% set _ = deploy.update({"success": false }) %}
+            {% set _ = fails.append(config_vlan_6.command) %}
+        {% endif %}
+    {% endif %}
+    
+    {% if config_vlan_7.failed is defined %}
+        {% if config_vlan_7.failed %}
+            {% set _ = deploy.update({"success": false }) %}
+            {% set _ = fails.append(config_vlan_7.command) %}
+        {% endif %}
+    {% endif %}
+    
+    {% if config_igmp.failed is defined %}
+        {% if config_igmp.failed %}
+            {% set _ = deploy.update({"success": false }) %}
+            {% set _ = fails.append(config_igmp.command) %}
+        {% endif %}
+    {% endif %}
+    
+    {% if config_mcast.failed is defined %}
+        {% if config_mcast.failed %}
+            {% set _ = deploy.update({"success": false }) %}
+            {% set _ = fails.append(config_mcast.command) %}
+        {% endif %}
+    {% endif %}
+    
+    {% if config_snmp.failed is defined %}
+        {% if config_snmp.failed %}
+            {% set _ = deploy.update({"success": false }) %}
+            {% set _ = fails.append(config_snmp.command) %}
+        {% endif %}
+    {% endif %}
+    
+    {% if config_tacacs_1.failed is defined %}
+        {% if config_tacacs_1.failed %}
+            {% set _ = deploy.update({"success": false }) %}
+            {% set _ = fails.append(config_tacacs_1.command) %}
+        {% endif %}
+    {% endif %}
+    {% if config_tacacs_2.failed is defined %}
+        {% if config_tacacs_2.failed %}
+            {% set _ = deploy.update({"success": false }) %}
+            {% set _ = fails.append(config_tacacs_2.command) %}
+        {% endif %}
+    {% endif %}
+    {% if config_tacacs_3.failed is defined %}
+        {% if config_tacacs_3.failed %}
+            {% set _ = deploy.update({"success": false }) %}
+            {% set _ = fails.append(config_tacacs_3.command) %}
+        {% endif %}
+    {% endif %}
+    {% if config_tacacs_4.failed is defined %}
+        {% if config_tacacs_4.failed %}
+            {% set _ = deploy.update({"success": false }) %}
+            {% set _ = fails.append(config_tacacs_4.command) %}
+        {% endif %}
+    {% endif %}
+
+    
+    {# {% if config_users_profile.failed is defined %} #}
+    {#    {% if config_users_profile.failed %} #}
+    {#        {% set _ = deploy.update({"success": false }) %} #}
+    {#        {% set _ = fails.append(config_users_profile.command) %} #}
+    {#    {% endif %} #}
+    {#{% endif %} #}
+
+    {#{% if config_users.failed is defined %} #}
+    {#    {% if config_users.failed %} #}
+    {#       {% set _ = deploy.update({"success": false }) %} #}
+    {#        {% set _ = fails.append(config_users.command) %} #}
+    {#    {% endif %} #}
+    {# {% endif %} #}
+    
+    {% set _ = deploy.update({"fails": fails }) %}
+{{deploy | to_json | safe}}

@@ -1,0 +1,17 @@
+---
+- hosts: CMTS
+  gather_facts: false
+  connection: local
+  debugger: never
+
+  tasks:
+
+  - name: Show version
+    ios_command:
+      commands:
+        - "show version"
+    register: salida
+
+  - name: Logueo salida
+    debug: 
+      msg: "[{{salida.stdout_lines[0]}}]"

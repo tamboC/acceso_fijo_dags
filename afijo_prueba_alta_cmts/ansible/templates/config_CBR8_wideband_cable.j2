@@ -1,0 +1,131 @@
+! CONFIGURE WIDEBAND 
+{% for port in range (0, 8) %}
+
+interface Wideband-Cable{{ item }}/0/{{ port }}:0
+ load-interval 30
+ cable bundle 1
+ cable rf-channels channel-list 0-31 bandwidth-percent 1
+
+interface Wideband-Cable{{ item }}/0/{{ port }}:1
+ load-interval 30
+ cable bundle 1
+ cable rf-channels channel-list 0-23 bandwidth-percent 1
+!
+interface Wideband-Cable{{ item }}/0/{{ port }}:2
+ load-interval 30
+ cable bundle 1
+ cable rf-channels channel-list 0-7 16-31 bandwidth-percent 1
+!
+interface Wideband-Cable{{ item }}/0/{{ port }}:4
+ load-interval 30
+ cable bundle 1
+ cable rf-channels channel-list 16-31 bandwidth-percent 1
+!
+interface Wideband-Cable{{ item }}/0/{{ port }}:5
+ load-interval 30
+ cable bundle 1
+ cable rf-channels channel-list 0-7 bandwidth-percent 1
+
+interface Wideband-Cable{{ item }}/0/{{ port }}:6
+ load-interval 30
+ cable bundle 1
+ cable rf-channels channel-list 8-15 bandwidth-percent 1
+!
+interface Wideband-Cable{{ item }}/0/{{ port }}:7
+ load-interval 30
+ cable bundle 1
+ cable rf-channels channel-list 16-23 bandwidth-percent 1
+!
+interface Wideband-Cable{{ item }}/0/{{ port }}:8
+ load-interval 30
+ cable bundle 1
+ cable rf-channels channel-list 24-31 bandwidth-percent 1
+!
+interface Wideband-Cable{{ item }}/0/{{ port }}:9
+ load-interval 30
+ cable bundle 1
+ cable rf-channels channel-list 0-3 bandwidth-percent 1
+!
+interface Wideband-Cable{{ item }}/0/{{ port }}:10
+ load-interval 30
+ cable bundle 1
+ cable rf-channels channel-list 0-31 158 bandwidth-percent 1
+!
+interface Wideband-Cable{{ item }}/0/{{ port }}:117
+cable bundle 1
+ no logging event link-status
+ load-interval 30
+ cable ds-resiliency
+ no snmp trap link-status
+!
+interface Wideband-Cable{{ item }}/0/{{ port }}:118
+cable bundle 1
+ no logging event link-status
+ load-interval 30
+ cable ds-resiliency
+ no snmp trap link-status
+!
+interface Wideband-Cable{{ item }}/0/{{ port }}:119
+cable bundle 1
+ no logging event link-status
+ load-interval 30
+ cable ds-resiliency
+ no snmp trap link-status
+!
+interface Wideband-Cable{{ item }}/0/{{ port }}:120
+cable bundle 1
+ no logging event link-status
+ load-interval 30
+ cable ds-resiliency
+ no snmp trap link-status
+!
+interface Wideband-Cable{{ item }}/0/{{ port }}:121
+cable bundle 1
+ no logging event link-status
+ load-interval 30
+ cable ds-resiliency
+ no snmp trap link-status
+!
+interface Wideband-Cable{{ item }}/0/{{ port }}:122
+cable bundle 1
+ no logging event link-status
+ load-interval 30
+ cable ds-resiliency
+ no snmp trap link-status
+!
+interface Wideband-Cable{{ item }}/0/{{ port }}:123
+cable bundle 1
+ no logging event link-status
+ load-interval 30
+ cable ds-resiliency
+ no snmp trap link-status
+!
+interface Wideband-Cable{{ item }}/0/{{ port }}:124
+cable bundle 1
+ no logging event link-status
+ load-interval 30
+ cable ds-resiliency
+ no snmp trap link-status
+!
+interface Wideband-Cable{{ item }}/0/{{ port }}:125
+cable bundle 1
+ no logging event link-status
+ load-interval 30
+ cable ds-resiliency
+ no snmp trap link-status
+!
+interface Wideband-Cable{{ item }}/0/{{ port }}:126
+cable bundle 1
+ no logging event link-status
+ load-interval 30
+ cable ds-resiliency
+ no snmp trap link-status
+!
+interface Wideband-Cable{{ item }}/0/{{ port }}:127
+cable bundle 1
+ no logging event link-status
+ load-interval 30
+ cable ds-resiliency
+ no snmp trap link-status
+!
+{% endfor %}

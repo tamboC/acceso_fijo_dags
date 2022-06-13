@@ -1,0 +1,66 @@
+---
+- hosts: OLT_NK
+  gather_facts: false
+  connection: telnet
+  debugger: never
+
+  tasks:
+###########################################
+############## Bloque para NK #############
+###########################################      
+    - block:
+
+        - name: -- Display Vendor and Model --
+          dslam_alcatel_command:
+            prompt: "{{ nombre }}.+#" 
+            command:
+              - show equipment shelf 1/1
+              - show software-mngt version etsi
+          register: info_model
+
+        - name: -- Filtro Modelo --
+          set_fact:
+            model: "{{ info_model.command[0]['show equipment shelf 1/1'] | parse_cli_textfsm('./templates/fsm/modelo_nk.fsm')}}"
+          delegate_to: localhost
+
+        - name: -- Filtro SW --
+          set_fact:
+            sw: "{{ info_model.command[1]['show software-mngt version etsi'] | parse_cli_textfsm('./templates/fsm/sw_nk.fsm')}}"
+          delegate_to: localhost
+
+        - name: Mostrar Resultado  Modelo
+          debug:
+             msg: "{{info_model}}"
+        
+        - name: Mostrar Resultado  Modelo
+          debug:
+             msg: "{% if model[0].modelo=='nfxs-a' %}7302{% elif  model[0].modelo=='nfxs-b' %}7330{% else %}7360{% endif %}"
+        
+        - name: Mostrar Resultado  SW
+          debug:
+             msg: "{{sw}}"
+
+        - name:
+          set_fact: 
+            nk_model: "{% if model[0].modelo=='nfxs-a' %}7302{% elif  model[0].modelo=='nfxs-b' %}7330{% else %}7360{% endif %}"
+          when: model is defined 
+        - name:
+          set_fact: 
+            nk_sw: "{{sw}}"
+          when: sw is defined 
+
+        - name: 
+          lineinfile:
+            path: /io/cel_afijo/tmp/olt_models.csv
+            line: "{{nombre}},NOKIA,{{nk_model}},-,{{nk_sw[0].sw}}"
+            create: yes
+            state: present
+          delegate_to: localhost
+        
+        # - name: 
+        #   lineinfile:
+        #     path: ./olt_models.csv
+        #     line: "{{inventory_hostname}},{% if model[0].modelo=='nfxs-a' %}NK7302{% elif  model[0].modelo=='nfxs-b' %}NK7330{% else %}NK7360{% endif %}"
+        #     create: yes
+        #     state: present
+        #   delegate_to: localhost

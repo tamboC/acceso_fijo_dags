@@ -1,0 +1,26 @@
+---
+- name: Version CMTS
+  connection: network_cli
+  gather_facts: false
+  hosts: CMTS_CISCO
+
+  tasks:
+    - name: -Hago un CAT del Show run --
+      shell: "cat `ls -rt /io/cel_core/backup/CMTS/{{nombre}}/configs/*.bkp | tail -1` | grep cbrsup"
+      register: version
+      delegate_to: localhost
+
+    - debug:
+        msg: "{{version}}"
+
+    - name: Creo el directorio para guardar la version
+      file:
+        path: /io/cel_core/backup/CMTS/{{nombre}}/configs/version
+        state: directory
+      delegate_to: localhost
+
+    - name: Copio la version de CBR8
+      copy:
+        content: "{{ version.stdout }}"
+        dest: /io/cel_core/backup/CMTS/{{nombre}}/configs/version/CISCO_{{nombre}}.cfg
+      delegate_to: localhost

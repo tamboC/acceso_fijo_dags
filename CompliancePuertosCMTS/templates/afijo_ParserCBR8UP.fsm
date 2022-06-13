@@ -1,0 +1,17 @@
+Value Filldown interface (\d+\/\d+\/\d+)
+Value us_channel (\d+)
+Value frequency (\d+\s\d+|\d+)
+Value channel_width (\d+)
+Value Required shutdown (no)
+Value docsis_mode (\w+)
+Value power (\d+)
+Value modulation (\d+)
+
+Start
+  ^controller\s+Upstream-Cable\s+${interface} 
+  ^\s+us.channel\s+${us_channel}\s+(frequency.range|frequency)\s+${frequency}
+  ^\s+us-channel\s+(\d+)\s+channel-width\s+${channel_width} 
+  ^\s+us-channel.(\d+)\s+power-level\s+${power}
+  ^\s+us-channel.(\d+)\s+docsis-mode\s+${docsis_mode}
+  ^\s+us-channel.(\d+)\s+modulation-profile\s+${modulation} 
+  ^\s+${shutdown} us-channel\s(\d+)\s+shutdown -> Record

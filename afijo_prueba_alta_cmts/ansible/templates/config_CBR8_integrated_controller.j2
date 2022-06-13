@@ -1,0 +1,28 @@
+! ### CONFIGURE INTEGRATED CONTROLLER - LINECARD {{ item }}
+{% for port in range (0, 8) %}
+controller integrated-cable  {{ item }}/0/{{ port }}
+ max-ofdm-spectrum 192000000
+ max-carrier 32
+ base-channel-power 34
+ rf-chan 0 7
+  type DOCSIS
+  frequency 603000000
+  rf-output NORMAL
+  power-adjust 0.0
+  qam-profile 1
+  docsis-channel-id 1
+ rf-chan 8 31
+  type DOCSIS
+  frequency 759000000
+  rf-output NORMAL
+  power-adjust 0.0
+  qam-profile 1
+  docsis-channel-id 9
+ rf-chan 158
+  power-adjust 0.0
+  docsis-channel-id 159
+  ofdm channel-profile 64 start-frequency 900000000 width 96000000 plc 906000000
+  exit
+ exit
+{% endfor %}
+!

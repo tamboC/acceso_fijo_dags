@@ -1,0 +1,22 @@
+---
+
+
+- name: -- GENERATE CONFIG CONTROLLER UPSTREAM CABLE - LINECARD {{ item }} --
+  set_fact:
+    texto: "{{ lookup('template', '{{ folder_templates }}/config_CBR8_controller_upstream_cable_ch_map.j2') }}"
+  
+- name: -- APPEND CONFIGURATION DE FILE {{ inventory_hostname }}.cfg --
+  shell: echo "{{texto}}" >> {{folder_config}}/configuration_day2.cfg
+  delegate_to: localhost   
+
+- name: -- APPLY CONFIG CONTROLLER UPSTREAM CABLE LINECARD {{ item }} --
+  ios_config: 
+    src: "{{folder_templates }}/config_CBR8_controller_upstream_cable_ch_map.j2"
+    backup: no
+    save_when: never
+  retries: 1
+  delay: 5
+  ignore_errors: yes
+  vars:
+    ansible_command_timeout: 1200    
+  when: port_parameters.apply_config == true

@@ -1,0 +1,39 @@
+---
+- name: Backup CMTS
+  connection: network_cli
+  gather_facts: false
+  hosts: CMTS_CISCO
+
+  tasks:
+
+    - debug:
+        msg: "HOLA - {{nombre}}"
+
+#    - debug:
+#        msg: "{{hostvars}}"
+      
+
+    - name: Backup CBR8
+      ios_command:
+        commands: 
+          -  terminal length 0
+          -  show startup-config
+      register: command_output_cisco
+      when: "'CMTS_CISCO' in group_names" 
+      ignore_errors: true
+
+    #- debug:
+    #    msg: "{{ command_output_cisco.stdout }}"
+
+#    - name: Creo el directorio para guardar el backup
+#      file:
+#        path: /usr/local/backup/CMTS/{{nombre}}/configs/
+#        state: directory
+#      delegate_to: localhost
+
+    - name: Copio salida de CBR8
+      copy:
+        content: "{{ command_output_cisco.stdout[1] }}"
+        dest: /io/cel_afijo/tmp/complience_cbr8_startup_config.bkp
+      delegate_to: localhost
+

@@ -1,0 +1,62 @@
+controller Upstream-Cable {{ upStream }}
+ us-channel 0 frequency 38600000
+ us-channel 0 channel-width 6400000 6400000
+ us-channel 0 power-level {{ RxPort }}
+ us-channel 0 docsis-mode atdma
+ us-channel 0 minislot-size 2
+ us-channel 0 modulation-profile 225
+ us-channel 0 equalization-coefficient
+ no us-channel 0 shutdown
+ us-channel 1 frequency 32200000
+ us-channel 1 channel-width 6400000 6400000
+ us-channel 1 power-level {{ RxPort }}
+ us-channel 1 docsis-mode atdma
+ us-channel 1 minislot-size 2
+ us-channel 1 modulation-profile 225
+ us-channel 1 equalization-coefficient
+ no us-channel 1 shutdown
+ us-channel 2 frequency 25800000
+ us-channel 2 channel-width 6400000 6400000
+ us-channel 2 power-level {{ RxPort }}
+ us-channel 2 docsis-mode atdma
+ us-channel 2 minislot-size 2
+ us-channel 2 modulation-profile 225
+ us-channel 2 equalization-coefficient
+ us-channel 2 shutdown
+ us-channel 3 frequency 19400000
+ us-channel 3 channel-width 6400000 6400000
+ us-channel 3 power-level {{ RxPort }}
+ us-channel 3 docsis-mode atdma
+ us-channel 3 minislot-size 2
+ us-channel 3 modulation-profile 222
+ us-channel 3 equalization-coefficient
+ us-channel 3 shutdown
+ us-channel 4 frequency 75400000
+ us-channel 4 channel-width 6400000 6400000
+ us-channel 4 power-level {{ RxPort }}
+ us-channel 4 docsis-mode atdma
+ us-channel 4 minislot-size 2
+ us-channel 4 modulation-profile 225
+ us-channel 4 equalization-coefficient
+ us-channel 4 shutdown
+ us-channel 5 frequency 81800000
+ us-channel 5 channel-width 6400000 6400000
+ us-channel 5 power-level {{ RxPort }}
+ us-channel 5 docsis-mode atdma
+ us-channel 5 minislot-size 2
+ us-channel 5 modulation-profile 225
+ us-channel 5 equalization-coefficient
+ us-channel 5 shutdown
+ us-channel 12 power-level {{ RxPort }}
+ us-channel 12 docsis-mode ofdma
+ us-channel 12 subcarrier-spacing 25KHz
+ us-channel 12 modulation-profile 430
+ us-channel 12 frequency-range 15000000 29000000
+ us-channel 12 cyclic-prefix 96 roll-off-period 64
+ us-channel 12 symbols-per-frame 18
+ us-channel 12 data-iuc 10 band 15500000 20000000 modulation 128-QAM pilot-pattern 11
+ us-channel 12 data-iuc 11 band 15500000 20000000 modulation 64-QAM pilot-pattern 11
+ us-channel 12 data-iuc 12 band 15500000 20000000 modulation 16-QAM pilot-pattern 11
+ us-channel 12 data-iuc 13 band 15500000 20000000 modulation 8-QAM pilot-pattern 11
+ no us-channel 12 shutdown
+ 

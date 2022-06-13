@@ -1,0 +1,35 @@
+---
+- name: Backup C100G
+  connection: network_cli
+  gather_facts: false
+  debugger: never
+  gather_facts: no
+  hosts: NE
+
+  tasks:
+
+    - name: Creo el directorio para guardar el backup
+      file:
+        path: /io/cel_core/backup/CMTS/{{inventory_hostname}}/configs/
+        state: directory
+      delegate_to: localhost
+
+    - name: Backup C100G 
+      ios_command:
+        commands: 
+          -  page-off
+          -  show running-config
+      register: command_output_casa
+      ignore_errors: true
+
+    - name: Debug
+      debug:
+        msg: "{{command_output_casa}}"
+      when: command_output_casa is defined
+      delegate_to: localhost
+
+    - name: Copio salida de C100G
+      copy:
+        content: "{{ command_output_casa.stdout[1] }}"
+        dest: /io/cel_core/backup/CMTS/{{inventory_hostname}}/configs/CASA_{{inventory_hostname}}_{{now().strftime("%d-%m-%y_%H-%M")}}.bkp 
+      delegate_to: localhost

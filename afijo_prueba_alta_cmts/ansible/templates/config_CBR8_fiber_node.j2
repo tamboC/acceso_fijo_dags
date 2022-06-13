@@ -1,0 +1,12 @@
+{% for port in range (0, 8) %}
+cable fiber-node {{ fiber_node_base[item] + (port*2) }} 
+ downstream Integrated-Cable {{ item }}/0/{{ port }}
+ upstream Upstream-Cable {{ item }}/0/{{ (port*2) }}
+ exit
+!
+cable fiber-node {{ fiber_node_base[item] + (port*2) + 1 }} 
+ downstream Integrated-Cable {{ item }}/0/{{ port }}
+ upstream Upstream-Cable {{ item }}/0/{{ (port*2) + 1 }}
+ exit
+!
+{% endfor %}

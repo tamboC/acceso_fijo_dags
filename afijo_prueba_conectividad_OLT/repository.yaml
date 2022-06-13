@@ -1,0 +1,8 @@
+[OLT]
+BUAP01 ansible_host=172.21.101.74 hostname=BUAP01
+
+[OLT:vars]
+ansible_user=automation_user
+ansible_ssh_pass=matdaem0n
+
+

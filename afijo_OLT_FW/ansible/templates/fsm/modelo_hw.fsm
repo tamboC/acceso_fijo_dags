@@ -1,0 +1,9 @@
+Value sw (\w+)
+Value patch (\w+)
+Value modelo (\w+)
+
+
+Start
+  ^\s+VERSION\s+:\s+${sw}
+  ^\s+PATCH\s+:\s+${patch}
+  ^\s+PRODUCT\s+:\s+${modelo} -> Record

@@ -1,0 +1,14 @@
+Value interface (\d+\/\d+\/\d+)
+Value mac (\d+)
+Value maca (\s+cable cable-mac|\s+ofdm cable-mac)
+Value freq_cen (\d+|.........\d+)
+Value mod (\d+)
+Value low_freq (\d+)
+Value high_freq (\d+) 
+
+Start
+  ^interface cable-downstream ${interface}
+  ^${maca} ${mac}
+  ^\s+cable frequency ${freq_cen}
+  ^\s+cable modulation ${mod} -> Record
+  ^\s+ofdm frequency\s+\w+.\w+\s+${low_freq}\s+\w+.\w+\s+${high_freq} -> Record

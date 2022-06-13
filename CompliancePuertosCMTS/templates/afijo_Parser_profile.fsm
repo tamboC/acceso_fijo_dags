@@ -1,0 +1,6 @@
+Value interface (\d+\/\d+\/\d+)
+Value profile (\d+)
+
+Start
+  ^interface cable-upstream\s+${interface}
+  ^\s+\w+ modulation-profile ${profile} -> Record

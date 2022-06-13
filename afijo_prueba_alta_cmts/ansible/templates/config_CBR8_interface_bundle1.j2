@@ -1,0 +1,104 @@
+! INTERFACE BUNDLE 1
+interface Bundle1
+ cable mtu-override
+ hold-queue 4096 in
+ shutdown
+ ip address {{ scopes["CM_PRIMARY"][0][0] }} {{ scopes["CM_PRIMARY"][0][1] }}
+{% if "CM" in scopes.keys() %}
+{% for scope in scopes["CM"] %}
+ ip address {{ scope[0] }} {{ scope[1] }} secondary
+{% endfor %}
+{% endif %}
+{% if "MTA" in scopes.keys() %}
+{% for scope in scopes["MTA"] %}
+ ip address {{ scope[0] }} {{ scope[1] }} secondary
+{% endfor %}
+{% endif %}
+{% if "SIP" in scopes.keys() %}
+{% for scope in scopes["SIP"] %}
+ ip address {{ scope[0] }} {{ scope[1] }} secondary
+{% endfor %}
+{% endif %}
+{% if "no_compatibles" in scopes.keys() %}
+{% for scope in scopes["no_compatibles"] %}
+ ip address {{ scope[0] }} {{ scope[1] }} secondary
+{% endfor %}
+{% endif %}
+{% if "FIBERTEL" in scopes.keys() %}
+{% for scope in scopes["FIBERTEL"] %}
+ ip address {{ scope[0] }} {{ scope[1] }} secondary
+{% endfor %}
+{% endif %}
+{% if "PRI_NAT44" in scopes.keys() %}
+{% for scope in scopes["PRI_NAT44"] %}
+ ip address {{ scope[0] }} {{ scope[1] }} secondary
+{% endfor %}
+{% endif %}
+{% if "PRIVATE" in scopes.keys() %}
+{% for scope in scopes["PRIVATE"] %}
+ ip address {{ scope[0] }} {{ scope[1] }} secondary
+{% endfor %}
+{% endif %}
+{% if "PROV" in scopes.keys() %}
+{% for scope in scopes["PROV"] %}
+ ip address {{ scope[0] }} {{ scope[1] }} secondary
+{% endfor %}
+{% endif %}
+{% if "DSG" in scopes.keys() %}
+{% for scope in scopes["DSG"] %}
+ ip address {{ scope[0] }} {{ scope[1] }} secondary
+{% endfor %}
+{% endif %}
+no ip redirects
+no ip unreachables
+ ip pim passive
+ ip igmp version 3
+ no cable nd
+ cable arp filter request-send 3 2
+ cable arp filter reply-accept 3 2
+ no cable arp
+ cable ipv6 source-verify dhcp
+ cable ipv6 source-verify leasequery-filter upstream 3 5
+ cable source-verify dhcp
+ cable source-verify leasequery-filter upstream 5 2
+ cable dhcp-giaddr policy strict
+ cable dhcp-giaddr policy host {{ scopes["FIBERTEL"][0][0] }}
+ cable dhcp-giaddr policy ps {{ scopes["FIBERTEL"][0][0] }}
+{% if "MTA" in scopes.keys() %}
+ cable dhcp-giaddr policy mta {{ scopes["MTA"][0][0] }}
+{% endif %}
+{% if "DSG" in scopes.keys() %}
+ cable dhcp-giaddr policy stb {{ scopes["DSG"][0][0] }}
+{% endif %}
+ cable helper-address {{ scopes["celda_A"] }} cable-modem
+ cable helper-address {{ scopes["celda_B"] }} cable-modem
+ cable helper-address {{ scopes["celda_A"] }} host
+ cable helper-address {{ scopes["celda_B"] }} host
+ cable helper-address {{ scopes["celda_A"] }} mta
+ cable helper-address {{ scopes["celda_B"] }} mta
+ cable helper-address {{ scopes["celda_A"] }} stb
+ cable helper-address {{ scopes["celda_B"] }} stb
+{% if haveIpv6 == True %}
+ ipv6 enable
+ !
+ ipv6 address 2800:2103:A000:40::1/64
+ ipv6 address 2800:2303:A000:40::1/64
+ !
+ ipv6 dhcp relay destination 2800:2F20:100B:10::11
+ ipv6 dhcp relay destination 2800:2F20:200B:10::11
+ ipv6 dhcp relay source-interface Bundle1
+ !
+ ipv6 nd reachable-time 600000
+ ipv6 nd dad attempts 0
+ ipv6 nd prefix default no-advertise
+ ipv6 nd managed-config-flag
+ ipv6 nd other-config-flag
+ ipv6 nd router-preference High
+ ipv6 nd ra lifetime 9000
+ ipv6 nd ra interval 10
+ no ipv6 redirects
+ no ipv6 unreachables
+ ipv6 dhcp relay source-interface Bundle1
+{% endif %}
+ no shutdown
+!

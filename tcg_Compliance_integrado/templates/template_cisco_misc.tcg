@@ -1,0 +1,64 @@
+service tcp-keepalives-in                                                                                         (M)
+service timestamps debug datetime msec localtime                                                                  (M)
+service timestamps log datetime msec localtime                                                                    (M)
+service password-encryption                                                                                       (M)
+service internal                                                                                                  (M)
+service compress-config                                                                                           (M)
+service sequence-numbers                                                                                          (M)
+service call-home                                                                                                 (M,W)?
+
+
+no platform punt-keepalive disable-kernel-core                                                                    (M)
+platform ipccl log-history 0                                                                                      (M)
+platform punt-sbrl subscriber rate 8                                                                              (M,W)?
+logging origin-id hostname                                                                                        (M)
+
+
+
+no ip source-route                                                                                                (M)
+no ip gratuitous-arps                                                                                             (M)
+
+no ip bootp server                                                                                                (M)
+no ip domain lookup                                                                                               (M)
+ip multicast-routing distributed                                                                                  (M)
+ip dhcp relay information option                                                                                  (M)
+no ip dhcp relay information check                                                                                (M)
+
+
+
+login on-failure log                                                                                              (M)
+no login on-success log                                                                                           (M)
+ipv6 unicast-routing                                                                                              (M)
+ipv6 cef distributed                                                                                              (M)
+
+
+
+packetcable authorize vanilla-docsis-mta                                                                          (M)
+packetcable gate send-subscriberID                                                                                (M)
+packetcable multimedia                                                                                            (M)
+packetcable                                                                                                       (M)
+
+spanning-tree extend system-id                                                                                    (M)
+
+
+class-map match-all VOIP_SIG                                                                                      (M)
+class-map match-all VOIP_SIG match ip dscp af31                                                                   (M)
+class-map match-any VOIP_RTP                                                                                      (M)
+class-map match-any VOIP_RTP match ip dscp ef                                                                     (M)
+class-map match-any VOIP_RTP match ip precedence 5                                                                (M)
+
+policy-map VOIP                                                                                                   (M)
+policy-map VOIP class VOIP_SIG                                                                                    (M)
+policy-map VOIP class VOIP_SIG bandwidth remaining percent 1                                                      (M)
+policy-map VOIP class VOIP_RTP                                                                                    (M)
+policy-map VOIP class VOIP_RTP priority                                                                           (M)
+
+! ### CALL HOME 
+call-home
+call-home contact-email-addr AE-ACC@cablevision.com.ar                                                 (M)
+call-home source-interface Loopback0                                                                   (M)
+call-home profile "CiscoTAC-1"                                                                         (M)
+call-home profile "CiscoTAC-1"  no reporting smart-call-home-data                                      (M)
+call-home profile "CiscoTAC-1"  destination address http https://10.200.200.250:443/Transportgateway/services/DeviceRequestHandler (M)
+call-home profile "CiscoTAC-1"  no destination address http https://tools.cisco.com/its/service/oddce/services/DDCEService         (M)
+!

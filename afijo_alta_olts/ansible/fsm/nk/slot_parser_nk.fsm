@@ -1,0 +1,6 @@
+Value slot (\w+\:\d+\/\d+\/\d+|\w+\-\w+)
+Value modelo (\w+.\w+)
+Value status (\w+)
+
+Start
+  ^${slot}\s+${modelo}\s+${status} -> Record

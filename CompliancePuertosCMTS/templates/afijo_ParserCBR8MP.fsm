@@ -1,0 +1,5 @@
+Value mod_profile (\d+)
+Value atdma_modulation (\w+)
+
+Start
+  ^cable\s+(modulation.profile|mod.profile.ofdma)\s+${mod_profile}(\s+atdma\s+a.short\s+\d+\s+\d+\s+\d+\s+\d+\s+${atdma_modulation}.*)? -> Record

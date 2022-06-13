@@ -1,0 +1,11 @@
+Value Filldown downstream (\d+\/\d+)
+Value channel (\d+)
+Value frequency (\d+)
+Value inifrec (\d+)
+Value finfrec (\d+)
+
+
+Start
+  ^interface\sqam\s+${downstream}
+  ^\s+channel\s+${channel}\s+frequency\s+${frequency} -> Record
+  ^\s+ofdm\-channel\s+${channel}\s+lower-freq\s+${inifrec}\supper\-freq\s${finfrec} -> Record

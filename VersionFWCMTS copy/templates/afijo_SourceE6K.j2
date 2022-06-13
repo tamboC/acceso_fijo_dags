@@ -1,0 +1,8 @@
+{% set CABLE_UP = current_config_CUP.stdout | parse_cli_textfsm('../templates/E6K_CM_UP.fsm') %}
+# INTERFACE CABLE-UPSTREAM
+{% for LINE_CABLE in CABLE_UP %}
+{{ LINE_CABLE.LINE1 }}
+{{ LINE_CABLE.LINE2 }} XX
+cable supervision {{ LINE_CABLE.LINE3 }}
+{{ LINE_CABLE.LINE_EXIT }}
+{% endfor %}

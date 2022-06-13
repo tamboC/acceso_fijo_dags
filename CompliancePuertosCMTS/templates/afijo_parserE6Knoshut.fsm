@@ -1,0 +1,7 @@
+Value Required slot (\d+\/\d+\/\d+)
+Value type (cable-\w+)
+Value bloque (\w+)
+Value no_shut (no\s+shutdown)
+
+Start
+  ^interface\s+${type}+\s+${slot}\s+${bloque}\s+${no_shut} -> Record

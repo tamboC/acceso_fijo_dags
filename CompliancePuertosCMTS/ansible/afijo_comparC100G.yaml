@@ -1,0 +1,58 @@
+---
+- name: Puertos C100G
+  connection: network_cli
+  gather_facts: false
+  hosts: CMTS_CASA
+  debugger: never
+  vars:
+    cdir: "{{PathTo.stdout}}/"
+    COMBINACION: "{{ lookup('file', '/usr/local/airflow/dags/cel_afijo/CompliancePuertosCMTS/output/mongo/C100Gagrego_{{nombre}}_source.json') | from_json }}"
+    COMBINACIONlisy: "{{ lookup('file', '/usr/local/tambo/files/cels/cel_afijo/tmp/json4db/{{nombre}}4db.json') | from_json }}"
+  tasks:
+
+    - name: -- JSON QUERY C100G--
+      debug:
+        var: item
+      loop: "{{ COMBINACION | to_json | from_json | json_query(query_filter) }}"
+      vars:
+        query_filter: "[].{CMTS: cmts, mac_domain: mac_domain, up_slot: up_slot, up_conn: up_conn, dw_conn: dw_conn, dw_slot: dw_slot, up_power: power_up}"
+      no_log: false
+      register: cmts_info
+      delegate_to: localhost
+
+    - name: -- JSON QUERY lisy --
+      debug:
+        var: item
+      loop: "{{ COMBINACIONlisy | to_json | from_json | json_query(query_filter) }}"
+      vars:
+        query_filter: "[].{CMTS: cmts, mac_domain: mac_domain, up_slot: up_slot, up_conn: up_conn, dw_conn: dw_conn, dw_slot: dw_slot, up_power: up_power}"
+      no_log: false
+      register: cmts_info_lisy
+      delegate_to: localhost
+
+
+    - name: -- BUILD TARGET FILE CMTS C100G--
+      copy:
+        content: "{{ lookup('template', '../templates/afijo_temC100G.j2') }}"
+        dest: "/usr/local/airflow/dags/cel_afijo/CompliancePuertosCMTS/output/C100G_{{nombre}}.txt"
+      delegate_to: localhost
+
+    - name: -- BUILD TARGET FILE LISY--
+      copy:
+        content: "{{ lookup('template', '../templates/afijo_temC100Glisy.j2') }}"
+        dest: "/usr/local/airflow/dags/cel_afijo/CompliancePuertosCMTS/output/lisy_{{nombre}}.txt"
+      delegate_to: localhost      
+
+    - name: Compara diferencias en archivo
+      shell: diff /usr/local/airflow/dags/cel_afijo/CompliancePuertosCMTS/output/C100G_{{nombre}}.txt /usr/local/airflow/dags/cel_afijo/CompliancePuertosCMTS/output/lisy_{{nombre}}.txt | egrep ">|<" | cat
+      register: DiffFile
+      delegate_to: localhost
+      ignore_errors: yes
+      run_once: true
+
+    - debug: 
+        var: DiffFile.stdout_lines
+
+    - name: Escribo Solo si hay diferencias
+      shell: echo "{{DiffFile.stdout}}" > /usr/local/airflow/dags/cel_afijo/CompliancePuertosCMTS/output/diff_{{nombre}}.dif
+      delegate_to: localhost
